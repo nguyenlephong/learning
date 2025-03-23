@@ -38,3 +38,6 @@ out/
 
 /src/main/resources/vocabulary.json
 /logs/
+
+.DS_Store/
+.DS_Store
