@@ -3,6 +3,9 @@ package com.learning.webmana.poc.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,17 +16,28 @@ import java.util.zip.*;
 @Service
 public class ZipService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ZipService.class);
+
+
     public ByteArrayOutputStream createZip(List<MultipartFile> files) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
+        logger.info("Starting ZIP compression...");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
             for (MultipartFile file : files) {
-                ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(file.getOriginalFilename()));
+                logger.debug("Adding file: {}", file.getOriginalFilename());
+                ZipEntry zipEntry = new ZipEntry(file.getOriginalFilename());
                 zipOut.putNextEntry(zipEntry);
                 zipOut.write(file.getBytes());
                 zipOut.closeEntry();
             }
+        } catch (IOException e) {
+            logger.error("Error during ZIP processing", e);
+            throw e;
         }
-        return byteArrayOutputStream;
+
+        logger.info("ZIP file created successfully.");
+        return baos;
     }
 
     public List<String> extractZip(MultipartFile zipFile) throws IOException {
