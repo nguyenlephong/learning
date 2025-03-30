@@ -25,7 +25,7 @@ class VocabularyManagement(tk.Frame):
         tk.Button(search_frame, text="🔍", command=self.search_word).pack(side="left", padx=5)
 
         tk.Label(search_frame, text="Lọc theo loại từ:", bg="white").pack(side="left", padx=10)
-        self.filter_combobox = ttk.Combobox(search_frame, values=["Tất cả", "Danh từ", "Động từ", "Tính từ"])
+        self.filter_combobox = ttk.Combobox(search_frame, values=["All", "N", "V", "Adj"])
         self.filter_combobox.current(0)
         self.filter_combobox.pack(side="left", padx=5)
         tk.Button(search_frame, text="Lọc", command=self.filter_words).pack(side="left", padx=5)
@@ -120,8 +120,38 @@ class VocabularyManagement(tk.Frame):
             messagebox.showerror("Lỗi", f"Không thể tìm kiếm từ vựng: {e}")
 
     def filter_words(self):
-        """Lọc từ vựng (Chưa triển khai)"""
-        pass
+        """Lọc danh sách từ vựng theo loại từ"""
+        filter_value = self.filter_combobox.get()  # Lấy giá trị đang chọn trong dropdown
+
+        # Load dữ liệu từ JSON
+        try:
+            with open("app/data/vocabulary.json", "r", encoding="utf-8") as file:
+                vocabulary_list = json.load(file)
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Không thể tải dữ liệu từ vựng: {e}")
+            return
+
+        # Nếu chọn "Tất cả", hiển thị toàn bộ danh sách
+        if filter_value == "All":
+            filtered_words = vocabulary_list
+        else:
+            # Lọc danh sách từ vựng theo loại từ được chọn
+            filtered_words = []
+            for word in vocabulary_list:
+                word_types = word.get("verb", [])  # Lấy danh sách loại từ (có thể mở rộng nếu có danh từ, tính từ)
+                if filter_value in word_types:
+                    filtered_words.append(word)
+
+        # Cập nhật lại bảng từ vựng
+        self.word_table.delete(*self.word_table.get_children())  # Xóa dữ liệu cũ
+        for item in filtered_words:
+            self.word_table.insert("", "end", values=(
+                item.get("id", ""),
+                item.get("word", ""),
+                ", ".join(item.get("verb", []) or []),
+                ", ".join(item.get("sentences", []) or []),
+                ", ".join(item.get("phrases", []) or [])
+            ))
 
     def add_word(self):
         """Thêm từ vựng (Chưa triển khai)"""
