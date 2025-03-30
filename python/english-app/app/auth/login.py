@@ -3,6 +3,7 @@ from tkinter import messagebox
 from utils.hash_utils import hash_password
 from utils.database import load_database
 
+
 class LoginWindow:
     def __init__(self, root):
         self.root = root
@@ -34,6 +35,13 @@ class LoginWindow:
             if user["email"] == email and user["password"] == hash_password(password):
                 messagebox.showinfo("Thành công", "Đăng nhập thành công!")
                 self.root.destroy()
+                new_root = tk.Tk()
+
+                """ Mở giao diện trang chủ """
+                from home.dashboard import DashboardWindow
+                DashboardWindow(new_root, user)
+                new_root.mainloop()
+
                 return
 
         messagebox.showerror("Lỗi", "Email hoặc mật khẩu không đúng!")
