@@ -72,8 +72,52 @@ class VocabularyManagement(tk.Frame):
             messagebox.showerror("Lỗi", f"Không thể tải dữ liệu từ vựng: {e}")
 
     def search_word(self):
-        """Tìm kiếm từ vựng (Chưa triển khai)"""
-        pass
+        """Lọc danh sách từ vựng dựa trên từ khóa nhập vào"""
+        keyword = self.search_entry.get().strip().lower()
+
+        if not keyword:
+            self.load_vocabulary_data()  # Nếu không nhập gì, hiển thị toàn bộ danh sách
+            return
+
+        # Tạo danh sách mới chứa các từ vựng phù hợp
+        filtered_words = []
+        try:
+            with open("app/data/vocabulary.json", "r", encoding="utf-8") as file:
+                vocabulary_list = json.load(file)
+
+            # Tìm từ vựng khớp với giá trị tìm kiếm
+            for word in vocabulary_list:
+                word_text = word.get("word", "").lower()  # Lấy từ vựng và chuyển về chữ thường
+                sentences = word.get("sentences", [])  # Lấy danh sách câu ví dụ
+
+                # Kiểm tra nếu từ khóa có trong từ vựng
+                is_in_word = keyword in word_text
+
+                # Kiểm tra nếu từ khóa có trong bất kỳ câu ví dụ nào
+                is_in_sentences = False
+                for sentence in sentences:
+                    if keyword in sentence.lower():
+                        is_in_sentences = True
+                        break  # Nếu tìm thấy trong 1 câu, không cần kiểm tra tiếp
+
+                # Nếu từ khóa xuất hiện trong từ vựng hoặc câu ví dụ, thêm vào danh sách kết quả
+                if is_in_word or is_in_sentences:
+                    filtered_words.append(word)
+
+            # Xóa dữ liệu cũ trước khi cập nhật bảng
+            self.word_table.delete(*self.word_table.get_children())
+
+            for item in filtered_words:
+                self.word_table.insert("", "end", values=(
+                    item.get("id", ""),
+                    item.get("word", ""),
+                    ", ".join(item.get("verb", []) or []),
+                    ", ".join(item.get("sentences", []) or []),
+                    ", ".join(item.get("phrases", []) or [])
+                ))
+
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Không thể tìm kiếm từ vựng: {e}")
 
     def filter_words(self):
         """Lọc từ vựng (Chưa triển khai)"""
