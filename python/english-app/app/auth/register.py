@@ -32,7 +32,10 @@ class RegisterWindow:
 
         # Nút Đăng ký
         self.btn_register = tk.Button(root, text="Đăng ký", command=self.register)
-        self.btn_register.pack(pady=20)
+        self.btn_register.pack(pady=10)
+
+        self.btn_back = tk.Button(root, text="Quay lại Đăng nhập", command=self.open_login_window)
+        self.btn_back.pack(pady=5)
 
     def register(self):
         """Xử lý đăng ký tài khoản."""
@@ -67,22 +70,18 @@ class RegisterWindow:
 
         # Mã hóa mật khẩu và lưu vào JSON
         hashed_password = hash_password(password)
-        new_user = {
-            "name": name,
-            "email": email,
-            "password": hashed_password,
-            "role": "user"
-        }
+        new_user = {"name": name, "email": email, "password": hashed_password, "role": "user"}
 
         database["users"].append(new_user)
         save_database(database)
         messagebox.showinfo("Thành công", "Đăng ký thành công!")
 
-        # Đóng cửa sổ sau khi đăng ký thành công
-        self.root.destroy()
+        self.open_login_window()
 
-# Khởi chạy giao diện đăng ký
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = RegisterWindow(root)
-    root.mainloop()
+    def open_login_window(self):
+        """Import LoginWindow here to avoid circular import."""
+        from auth.login import LoginWindow  # ✅ Import only inside function
+        self.root.destroy()
+        new_root = tk.Tk()
+        LoginWindow(new_root)
+        new_root.mainloop()

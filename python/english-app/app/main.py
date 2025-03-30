@@ -1,7 +1,7 @@
-from auth.register import RegisterWindow
+from auth.login import LoginWindow
 import tkinter as tk
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = RegisterWindow(root)
+    app = LoginWindow(root)
     root.mainloop()
