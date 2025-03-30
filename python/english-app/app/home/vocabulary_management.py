@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import json
+from tkinter import filedialog
+
 
 class VocabularyManagement(tk.Frame):
     def __init__(self, parent, user):
@@ -170,5 +172,34 @@ class VocabularyManagement(tk.Frame):
         pass
 
     def export_json(self):
-        """Xuất từ JSON (Chưa triển khai)"""
-        pass
+        """Xuất dữ liệu từ vựng ra file JSON"""
+        # Lấy toàn bộ dữ liệu hiện có trong bảng
+        vocabulary_data = []
+        for row in self.word_table.get_children():
+            values = self.word_table.item(row, "values")
+            vocabulary_data.append({
+                "id": values[0],
+                "word": values[1],
+                "verb": values[2].split(", "),
+                "sentences": values[3].split(", "),
+                "phrases": values[4].split(", ")
+            })
+
+        # Hiển thị hộp thoại chọn nơi lưu file
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json"), ("All Files", "*.*")],
+            title="Chọn nơi lưu file"
+        )
+
+        if not file_path:  # Nếu người dùng không chọn file thì thoát
+            return
+
+        # Ghi dữ liệu ra file JSON
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                json.dump(vocabulary_data, file, indent=4, ensure_ascii=False)
+
+            messagebox.showinfo("Thành công", "Xuất dữ liệu thành công!")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Không thể xuất dữ liệu: {e}")
