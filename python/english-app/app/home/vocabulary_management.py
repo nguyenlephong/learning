@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import json
 from tkinter import filedialog
+from home.vocabulary_form import VocabularyForm
+from utils.database import load_word_database, save_word_database
 
 
 class VocabularyManagement(tk.Frame):
@@ -156,16 +158,62 @@ class VocabularyManagement(tk.Frame):
             ))
 
     def add_word(self):
-        """Thêm từ vựng (Chưa triển khai)"""
-        pass
+        """Open form to add new word"""
+        new_root = tk.Toplevel(self.parent)
+        VocabularyForm(new_root)
 
     def edit_word(self):
-        """Chỉnh sửa từ vựng (Chưa triển khai)"""
-        pass
+        """Open form to edit selected word"""
+        selected = self.word_table.selection()
+        if not selected:
+            messagebox.showerror("Error", "Please select a word to edit!")
+            return
+            
+        word_data = {
+            "word": self.word_table.item(selected[0])["values"][0],
+            "meaning": self.word_table.item(selected[0])["values"][1],
+            "type": self.word_table.item(selected[0])["values"][2],
+            "example": self.word_table.item(selected[0])["values"][3]
+        }
+        
+        new_root = tk.Toplevel(self.parent)
+        form = VocabularyForm(new_root, word_data)
+        
+        # Wait for the form to close
+        self.parent.wait_window(new_root)
+        
+        # Refresh the vocabulary list after editing
+        self.load_vocabulary_data()
 
     def delete_word(self):
-        """Xóa từ vựng (Chưa triển khai)"""
-        pass
+        """Delete selected word"""
+        selected = self.word_table.selection()
+        if not selected:
+            messagebox.showerror("Error", "Please select a word to delete!")
+            return
+            
+        word_id = self.word_table.item(selected[0])["values"][0]
+        word = self.word_table.item(selected[0])["values"][1]
+        
+        # Confirm deletion
+        if not messagebox.askyesno("Confirm Deletion", 
+                                 f"Are you sure you want to delete the word '{word}'?\nThis action cannot be undone."):
+            return
+            
+        try:
+            database = load_word_database()
+            
+            # Remove word from database
+            database = [w for w in database if w["id"] != word_id]
+            save_word_database(database)
+            
+            # Refresh list
+            self.load_vocabulary_data()
+            
+            messagebox.showinfo("Success", f"Word '{word}' has been deleted successfully!")
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to delete word: {str(e)}")
 
     def import_json(self):
         """Nhập từ JSON (Chưa triển khai)"""
