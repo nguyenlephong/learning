@@ -2,13 +2,21 @@ import tkinter as tk
 from tkinter import messagebox
 from utils.hash_utils import hash_password
 from utils.database import load_database
+from common.configs import WINDOW_SIZE
 
 
 class LoginWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("Đăng nhập")
-        self.root.geometry("400x300")
+
+
+        # Khởi tạo màn hình ở vị trí giữa cửa sổ
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = int((screen_width / 2) - (WINDOW_SIZE['WIDTH'] / 2))
+        y = int((screen_height / 2) - (WINDOW_SIZE['HEIGHT'] / 2))
+        self.root.geometry(f"{WINDOW_SIZE['WIDTH']}x{WINDOW_SIZE['HEIGHT']}+{x}+{y}")
 
         tk.Label(root, text="Email:").pack(pady=5)
         self.entry_email = tk.Entry(root)

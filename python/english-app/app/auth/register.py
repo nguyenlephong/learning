@@ -3,12 +3,19 @@ from tkinter import messagebox
 from utils.validators import is_valid_email, is_valid_password
 from utils.hash_utils import hash_password
 from utils.database import load_database, save_database
+from common.configs import WINDOW_SIZE
 
 class RegisterWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("Đăng ký tài khoản")
-        self.root.geometry("400x400")
+
+        # Khởi tạo màn hình ở vị trí giữa cửa sổ
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = int((screen_width / 2) - (WINDOW_SIZE['WIDTH'] / 2))
+        y = int((screen_height / 2) - (WINDOW_SIZE['HEIGHT'] / 2))
+        self.root.geometry(f"{WINDOW_SIZE['WIDTH']}x{WINDOW_SIZE['HEIGHT']}+{x}+{y}")
 
         # Label và Entry cho Họ và tên
         tk.Label(root, text="Họ và tên:").pack(pady=5)

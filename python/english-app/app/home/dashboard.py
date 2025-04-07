@@ -3,22 +3,30 @@ from tkinter import ttk, messagebox
 
 from home.vocabulary_management import VocabularyManagement
 from common.colors import COLORS
+from common.configs import WINDOW_SIZE
 
 
 class DashboardWindow:
     def __init__(self, root, user):
         self.root = root
         self.root.title("Trang chủ - Dashboard")
-        self.root.geometry("800x500")
+
+        # Khởi tạo màn hình ở vị trí giữa cửa sổ
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = int((screen_width / 2) - (WINDOW_SIZE['WIDTH'] / 2))
+        y = int((screen_height / 2) - (WINDOW_SIZE['HEIGHT'] / 2))
+        self.root.geometry(f"{WINDOW_SIZE['WIDTH']}x{WINDOW_SIZE['HEIGHT']}+{x}+{y}")
+
         self.root.configure(bg=COLORS["background"])  # Set background color
         self.user = user
 
         # Frame sidebar
-        self.sidebar = tk.Frame(root, bg=COLORS["primary"], width=200, height=500)
+        self.sidebar = tk.Frame(root, bg=COLORS["primary"], width=368, height=768)
         self.sidebar.pack(side="left", fill="y")
 
         # Frame nội dung chính
-        self.main_content = tk.Frame(root, bg="white", width=600, height=500)
+        self.main_content = tk.Frame(root, bg="white", width=1000, height=768)
         self.main_content.pack(side="right", fill="both", expand=True)
 
         # Menu điều hướng
