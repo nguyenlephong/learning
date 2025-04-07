@@ -144,12 +144,34 @@ class VocabularyForm(BaseWindow):
 
     def populate_fields(self):
         """Populate form fields with existing word data"""
-        self.word_var.set(self.word_data.get("word", ""))
-        self.unit_var.set(str(self.word_data.get("unitId", "")))
-        self.type_var.set(self.word_data.get("verb", ["V"])[0])
-        self.answers_var.set(", ".join(self.word_data.get("answers", [])))
-        self.sentences_text.insert("1.0", "\n".join(self.word_data.get("sentences", [])))
-        self.phrases_text.insert("1.0", "\n".join(self.word_data.get("phrases", [])))
+        if not self.word_data:
+            return
+            
+        try:
+            # Set basic fields
+            self.word_var.set(self.word_data.get("word", ""))
+            self.unit_var.set(str(self.word_data.get("unitId", "")))
+            
+            # Set word type (get first type if multiple)
+            verb_types = self.word_data.get("verb", [])
+            self.type_var.set(verb_types[0] if verb_types else "V")
+            
+            # Set answers (join array with commas)
+            answers = self.word_data.get("answers", [])
+            self.answers_var.set(", ".join(answers))
+            
+            # Set sentences (join array with newlines)
+            sentences = self.word_data.get("sentences", [])
+            self.sentences_text.delete("1.0", "end")
+            self.sentences_text.insert("1.0", "\n".join(sentences))
+            
+            # Set phrases (join array with newlines)
+            phrases = self.word_data.get("phrases", [])
+            self.phrases_text.delete("1.0", "end")
+            self.phrases_text.insert("1.0", "\n".join(phrases))
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load word data: {str(e)}")
 
     def save_word(self):
         """Save word to database"""

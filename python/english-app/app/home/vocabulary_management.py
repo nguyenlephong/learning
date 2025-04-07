@@ -169,21 +169,37 @@ class VocabularyManagement(tk.Frame):
             messagebox.showerror("Error", "Please select a word to edit!")
             return
             
-        word_data = {
-            "word": self.word_table.item(selected[0])["values"][0],
-            "meaning": self.word_table.item(selected[0])["values"][1],
-            "type": self.word_table.item(selected[0])["values"][2],
-            "example": self.word_table.item(selected[0])["values"][3]
-        }
+        # Get the word ID from the selected row
+        word_id = self.word_table.item(selected[0])["values"][0]
         
-        new_root = tk.Toplevel(self.parent)
-        form = VocabularyForm(new_root, word_data)
-        
-        # Wait for the form to close
-        self.parent.wait_window(new_root)
-        
-        # Refresh the vocabulary list after editing
-        self.load_vocabulary_data()
+        try:
+            # Load database and find the word
+            with open("app/data/vocabulary.json", "r", encoding="utf-8") as file:
+                vocabulary_list = json.load(file)
+                
+            # Find the word in the database
+            word_data = None
+            for word in vocabulary_list:
+                if word["id"] == word_id:
+                    word_data = word
+                    break
+                    
+            if not word_data:
+                messagebox.showerror("Error", "Word not found in database!")
+                return
+                
+            # Open edit form with the word data
+            new_root = tk.Toplevel(self.parent)
+            VocabularyForm(new_root, word_data)
+            
+            # Wait for the form to close
+            self.parent.wait_window(new_root)
+            
+            # Refresh the vocabulary list after editing
+            self.load_vocabulary_data()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to edit word: {str(e)}")
 
     def delete_word(self):
         """Delete selected word"""
