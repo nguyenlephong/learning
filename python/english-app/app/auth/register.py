@@ -1,14 +1,17 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from utils.validators import is_valid_email, is_valid_password
 from utils.hash_utils import hash_password
 from utils.database import load_database, save_database
 from common.configs import WINDOW_SIZE
+import os
+from PIL import Image, ImageTk
 
 class RegisterWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("Đăng ký tài khoản")
+        self.root.configure(bg='white')
 
         # Khởi tạo màn hình ở vị trí giữa cửa sổ
         screen_width = self.root.winfo_screenwidth()
@@ -17,32 +20,133 @@ class RegisterWindow:
         y = int((screen_height / 2) - (WINDOW_SIZE['HEIGHT'] / 2))
         self.root.geometry(f"{WINDOW_SIZE['WIDTH']}x{WINDOW_SIZE['HEIGHT']}+{x}+{y}")
 
-        # Label và Entry cho Họ và tên
-        tk.Label(root, text="Họ và tên:").pack(pady=5)
-        self.entry_name = tk.Entry(root)
-        self.entry_name.pack(pady=5)
+        # Load image
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.abspath(os.path.join(script_dir, "..", "assets", "auth2.webp"))
 
-        # Label và Entry cho Email
-        tk.Label(root, text="Email:").pack(pady=5)
-        self.entry_email = tk.Entry(root)
-        self.entry_email.pack(pady=5)
+        # Left frame cho ảnh
+        self.left_frame = tk.Frame(root, width=(WINDOW_SIZE['WIDTH'] / 3 * 2), height=WINDOW_SIZE['HEIGHT'],
+                                 bg='#f0f2f5')
+        self.left_frame.pack(side="left", fill="both", expand=False)
 
-        # Label và Entry cho Mật khẩu
-        tk.Label(root, text="Mật khẩu:").pack(pady=5)
-        self.entry_password = tk.Entry(root, show="*")
-        self.entry_password.pack(pady=5)
+        self.left_image = self.load_and_resize_image(image_path, int(WINDOW_SIZE['WIDTH'] / 3 * 2),
+                                                   WINDOW_SIZE['HEIGHT'])
 
-        # Label và Entry cho Xác nhận Mật khẩu
-        tk.Label(root, text="Xác nhận mật khẩu:").pack(pady=5)
-        self.entry_confirm_password = tk.Entry(root, show="*")
-        self.entry_confirm_password.pack(pady=5)
+        self.image_label = tk.Label(self.left_frame, image=self.left_image, bg='#f0f2f5')
+        self.image_label.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Nút Đăng ký
-        self.btn_register = tk.Button(root, text="Đăng ký", command=self.register)
+        # Right frame for register form
+        self.right_frame = tk.Frame(root, bg="white")
+        self.right_frame.pack(side="right", fill="both", expand=True, padx=40)
+
+        # Create register form
+        self.create_register_form()
+
+    def load_and_resize_image(self, path, frame_width, frame_height):
+        """Tải và resize ảnh theo đúng tỉ lệ để fit vào khung"""
+        image = Image.open(path)
+        img_ratio = image.width / image.height
+        frame_ratio = frame_width / frame_height
+
+        if img_ratio > frame_ratio:
+            new_width = frame_width
+            new_height = int(frame_width / img_ratio)
+        else:
+            new_height = frame_height
+            new_width = int(frame_height * img_ratio)
+
+        resized = image.resize((new_width, new_height), Image.LANCZOS)
+        return ImageTk.PhotoImage(resized)
+
+    def create_register_form(self):
+        """Tạo biểu mẫu đăng ký"""
+        # Title for the app
+        title_label = tk.Label(self.right_frame, 
+                             text="English Learning", 
+                             font=("Helvetica", 28, "bold"), 
+                             fg="#1a73e8",
+                             bg="white")
+        title_label.pack(pady=(40, 20))
+
+        # Welcome text
+        welcome_label = tk.Label(self.right_frame,
+                               text="Create your account",
+                               font=("Helvetica", 16),
+                               fg="#5f6368",
+                               bg="white")
+        welcome_label.pack(pady=(0, 30))
+
+        # Name field
+        name_frame = tk.Frame(self.right_frame, bg="white")
+        name_frame.pack(fill="x", pady=5)
+        tk.Label(name_frame, 
+                text="Full Name", 
+                font=("Helvetica", 12),
+                fg="#5f6368",
+                bg="white").pack(anchor="w")
+        self.entry_name = ttk.Entry(name_frame, width=40)
+        self.entry_name.pack(pady=(5, 15))
+
+        # Email field
+        email_frame = tk.Frame(self.right_frame, bg="white")
+        email_frame.pack(fill="x", pady=5)
+        tk.Label(email_frame, 
+                text="Email", 
+                font=("Helvetica", 12),
+                fg="#5f6368",
+                bg="white").pack(anchor="w")
+        self.entry_email = ttk.Entry(email_frame, width=40)
+        self.entry_email.pack(pady=(5, 15))
+
+        # Password field
+        password_frame = tk.Frame(self.right_frame, bg="white")
+        password_frame.pack(fill="x", pady=5)
+        tk.Label(password_frame, 
+                text="Password", 
+                font=("Helvetica", 12),
+                fg="#5f6368",
+                bg="white").pack(anchor="w")
+        self.entry_password = ttk.Entry(password_frame, show="•", width=40)
+        self.entry_password.pack(pady=(5, 15))
+
+        # Confirm Password field
+        confirm_frame = tk.Frame(self.right_frame, bg="white")
+        confirm_frame.pack(fill="x", pady=5)
+        tk.Label(confirm_frame, 
+                text="Confirm Password", 
+                font=("Helvetica", 12),
+                fg="#5f6368",
+                bg="white").pack(anchor="w")
+        self.entry_confirm_password = ttk.Entry(confirm_frame, show="•", width=40)
+        self.entry_confirm_password.pack(pady=(5, 20))
+
+        # Register button
+        self.btn_register = tk.Button(self.right_frame, 
+                                    text="Đăng ký", 
+                                    command=self.register,
+                                    font=("Helvetica", 12),
+                                    bg="#1a73e8",
+                                    fg="white",
+                                    relief="flat",
+                                    padx=20,
+                                    pady=10,
+                                    cursor="hand2")
         self.btn_register.pack(pady=10)
+        self.btn_register.bind("<Enter>", lambda e: self.btn_register.configure(bg="#1557b0"))
+        self.btn_register.bind("<Leave>", lambda e: self.btn_register.configure(bg="#1a73e8"))
 
-        self.btn_back = tk.Button(root, text="Quay lại Đăng nhập", command=self.open_login_window)
-        self.btn_back.pack(pady=5)
+        # Back to login button
+        self.btn_back = tk.Button(self.right_frame, 
+                                text="Quay lại Đăng nhập", 
+                                command=self.open_login_window,
+                                font=("Helvetica", 12),
+                                bg="white",
+                                fg="#1a73e8",
+                                relief="flat",
+                                cursor="hand2")
+        self.btn_back.pack(pady=10)
+        self.btn_back.bind("<Enter>", lambda e: self.btn_back.configure(fg="#1557b0"))
+        self.btn_back.bind("<Leave>", lambda e: self.btn_back.configure(fg="#1a73e8"))
 
     def register(self):
         """Xử lý đăng ký tài khoản."""
