@@ -8,7 +8,6 @@ project_root/
 │── app/
 │   │── main.py                     # Điểm khởi chạy ứng dụng
 │   │── config.py                    # Cấu hình chung của ứng dụng
-│   │── database.py                   # Kết nối và xử lý database
 │   │── auth/                         
 │   │   │── login.py                  # Xử lý đăng nhập
 │   │   │── register.py               # Xử lý đăng ký
@@ -34,14 +33,26 @@ project_root/
 │   │── utils/                        
 │   │   │── validators.py             # Xác thực dữ liệu đầu vào
 │   │   │── file_handler.py           # Xử lý file nhập/xuất
-│   │   │── message_box.py            # Hiển thị hộp thoại thông báo
+│   │   │── database.py               # Kết nối và xử lý database
 │   │
 │   │── assets/                        # Chứa tài nguyên như icon, ảnh
 │   │── data/                          # Chứa file JSON dữ liệu từ vựng
-│   │── exports/                       # Chứa file xuất từ vựng (JSON, CSV, PDF, TXT)
-│   │── templates/                     # Chứa template giao diện nếu dùng Tkinter + ttkbootstrap
 │
 │── requirements.txt                   # Danh sách thư viện cần cài đặt
 │── README.md                          # Hướng dẫn sử dụng
 │── .gitignore                          # Các file cần bỏ qua khi đẩy lên git
+```
+
+## Cài đặt
+
+```bash
+pip install -r requirements.txt
+```
+
+
+## How to run
+
+```python
+
+python app/main.py
 ```
