@@ -1,10 +1,8 @@
 from setuptools import setup, find_packages
 
-# Read the contents of your README file
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# Read the list of requirements
 with open("requirements.txt", "r", encoding="utf-8") as fh:
     required_packages = fh.read().splitlines()
 

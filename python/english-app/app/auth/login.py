@@ -3,12 +3,14 @@ from tkinter import messagebox, ttk
 from utils.hash_utils import hash_password
 from utils.database import load_database
 from common.configs import WINDOW_SIZE
-import os
+from common.base_window import BaseWindow
 from PIL import Image, ImageTk
+import os
 
 
-class LoginWindow:
+class LoginWindow(BaseWindow):
     def __init__(self, root):
+        super().__init__(root, "Login", WINDOW_SIZE['WIDTH'], WINDOW_SIZE['HEIGHT'])
         self.root = root
         self.root.title("Đăng nhập")
         self.root.configure(bg='white')
@@ -153,9 +155,9 @@ class LoginWindow:
         messagebox.showerror("Lỗi", "Email hoặc mật khẩu không đúng!")
 
     def open_register_window(self):
-        """Import RegisterWindow here to avoid circular import."""
-        from auth.register import RegisterWindow  # ✅ Import only inside function
+        """Open register window"""
         self.root.destroy()
-        new_root = tk.Tk()
-        RegisterWindow(new_root)
-        new_root.mainloop()
+        from auth.register import RegisterWindow
+        root = tk.Tk()
+        app = RegisterWindow(root)
+        root.mainloop()
