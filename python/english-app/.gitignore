@@ -2,3 +2,7 @@
 __pycache__
 app/data/database.json
 app/data/vocabulary.json
+
+dist
+build
+main.spec

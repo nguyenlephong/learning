@@ -43,16 +43,28 @@ project_root/
 │── .gitignore                          # Các file cần bỏ qua khi đẩy lên git
 ```
 
-## Cài đặt
 
+## How to run
+### First run
 ```bash
 pip install -r requirements.txt
 ```
 
-
-## How to run
-
-```python
-
+### Trigger run development app
+```bash
 python app/main.py
+```
+
+## How to build
+
+### First run
+```bash
+pip install --upgrade pip
+pip install pyinstaller
+
+```
+
+### Trigger build
+```bash
+pyinstaller --onefile --windowed app/main.py
 ```
