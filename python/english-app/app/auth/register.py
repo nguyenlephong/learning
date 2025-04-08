@@ -6,6 +6,7 @@ from utils.database import load_database, save_database
 from common.configs import WINDOW_SIZE
 import os
 from PIL import Image, ImageTk
+import sys
 
 class RegisterWindow:
     def __init__(self, root):
@@ -21,8 +22,17 @@ class RegisterWindow:
         self.root.geometry(f"{WINDOW_SIZE['WIDTH']}x{WINDOW_SIZE['HEIGHT']}+{x}+{y}")
 
         # Load image
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(script_dir, "..", "assets", "auth2.webp"))
+        if getattr(sys, 'frozen', False):
+            # Running as compiled executable
+            base_path = os.path.join(sys._MEIPASS, 'app')
+        else:
+            # Running as script
+            base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
+        image_path = os.path.join(base_path, "assets", "auth2.webp")
+        
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(f"Image not found at: {image_path}")
 
         # Left frame cho ảnh
         self.left_frame = tk.Frame(root, width=(WINDOW_SIZE['WIDTH'] / 3 * 2), height=WINDOW_SIZE['HEIGHT'],

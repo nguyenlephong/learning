@@ -53,6 +53,7 @@ pip install -r requirements.txt
 ### Trigger run development app
 ```bash
 python app/main.py
+python -m app.main
 ```
 
 ## How to build
@@ -60,6 +61,9 @@ python app/main.py
 ### First run
 ```bash
 pip install --upgrade pip
+
+#or 
+
 pip install pyinstaller
 
 ```

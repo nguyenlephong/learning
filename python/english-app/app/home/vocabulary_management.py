@@ -44,22 +44,21 @@ class VocabularyManagement(tk.Frame):
 
         self.word_table.pack(pady=10, fill="both", expand=True)
 
+        btn_frame = tk.Frame(self, bg="white")
+        btn_frame.pack(pady=5)
+        tk.Button(btn_frame, text="📂 Nhập JSON", command=self.import_json).pack(side="left", padx=5)
+        
         # Nút thao tác (Chỉ dành cho Admin)
         if self.user["role"] == "admin":
-            btn_frame = tk.Frame(self, bg="white")
-            btn_frame.pack(pady=5)
-
             tk.Button(btn_frame, text="➕ Thêm từ mới", command=self.add_word).pack(side="left", padx=5)
             tk.Button(btn_frame, text="✏️ Chỉnh sửa", command=self.edit_word).pack(side="left", padx=5)
             tk.Button(btn_frame, text="❌ Xóa", command=self.delete_word).pack(side="left", padx=5)
-            tk.Button(btn_frame, text="📂 Nhập JSON", command=self.import_json).pack(side="left", padx=5)
             tk.Button(btn_frame, text="💾 Xuất JSON", command=self.export_json).pack(side="left", padx=5)
 
     def load_vocabulary_data(self):
         """Load danh sách từ vựng từ file JSON và hiển thị trên bảng"""
         try:
-            with open("app/data/vocabulary.json", "r", encoding="utf-8") as file:
-                vocabulary_list = json.load(file)
+            vocabulary_list = load_word_database()
 
             self.word_table.delete(*self.word_table.get_children())  # Clear bảng trước khi load mới
 
@@ -86,8 +85,7 @@ class VocabularyManagement(tk.Frame):
         # Tạo danh sách mới chứa các từ vựng phù hợp
         filtered_words = []
         try:
-            with open("app/data/vocabulary.json", "r", encoding="utf-8") as file:
-                vocabulary_list = json.load(file)
+            vocabulary_list = load_word_database()
 
             # Tìm từ vựng khớp với giá trị tìm kiếm
             for word in vocabulary_list:
@@ -129,8 +127,7 @@ class VocabularyManagement(tk.Frame):
 
         # Load dữ liệu từ JSON
         try:
-            with open("app/data/vocabulary.json", "r", encoding="utf-8") as file:
-                vocabulary_list = json.load(file)
+            vocabulary_list = load_word_database()
         except Exception as e:
             messagebox.showerror("Lỗi", f"Không thể tải dữ liệu từ vựng: {e}")
             return
@@ -174,8 +171,7 @@ class VocabularyManagement(tk.Frame):
         
         try:
             # Load database and find the word
-            with open("app/data/vocabulary.json", "r", encoding="utf-8") as file:
-                vocabulary_list = json.load(file)
+            vocabulary_list = load_word_database()
                 
             # Find the word in the database
             word_data = None
