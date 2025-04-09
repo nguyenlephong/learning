@@ -53,6 +53,7 @@ pip install -r requirements.txt
 ### Trigger run development app
 ```bash
 python app/main.py
+# or
 python -m app.main
 ```
 
@@ -61,14 +62,20 @@ python -m app.main
 ### First run
 ```bash
 pip install --upgrade pip
-
-#or 
-
 pip install pyinstaller
 
 ```
 
 ### Trigger build
+
+1. Windows
+```bash
+rmdir /s build
+rmdir /s dist
+pyinstaller app.spec
+```
+
+2. MacOS
 ```bash
 rm -rf build dist
 pyinstaller app.spec
@@ -79,6 +86,5 @@ pyinstaller app.spec
 ### Another way
 
 ```bash
-pyinstaller --name EnglishApp --add-data "app/data;app/data" --hidden-import auth --hidden-import home --hidden-import common --hidden-import utils --hidden-import app.auth --hidden-import app.home --hidden-import app.common --hidden-import app.utils app/main.py
 pyinstaller --onefile --windowed app/main.py
 ```
