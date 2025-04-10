@@ -17,18 +17,18 @@ class VocabularyManagement(tk.Frame):
 
     def create_ui(self):
         """Tạo giao diện quản lý từ vựng"""
-        tk.Label(self, text="Quản lý từ vựng", font=("Arial", 16, "bold"), bg="white").pack(pady=10)
+        tk.Label(self, text="User Management", font=("Arial", 16, "bold")).pack(pady=10)
 
         # Thanh tìm kiếm và bộ lọc
-        search_frame = tk.Frame(self, bg="white")
+        search_frame = tk.Frame(self)
         search_frame.pack(pady=5, fill="x")
 
-        tk.Label(search_frame, text="Tìm kiếm:", bg="white").pack(side="left", padx=5)
+        tk.Label(search_frame, text="Tìm kiếm:").pack(side="left", padx=5)
         self.search_entry = tk.Entry(search_frame)
         self.search_entry.pack(side="left", padx=5)
         tk.Button(search_frame, text="🔍", command=self.search_word).pack(side="left", padx=5)
 
-        tk.Label(search_frame, text="Lọc theo loại từ:", bg="white").pack(side="left", padx=10)
+        tk.Label(search_frame, text="Lọc theo loại từ:").pack(side="left", padx=10)
         self.filter_combobox = ttk.Combobox(search_frame, values=["All", "N", "V", "Adj"])
         self.filter_combobox.current(0)
         self.filter_combobox.pack(side="left", padx=5)

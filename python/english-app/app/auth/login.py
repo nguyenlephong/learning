@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 from utils.hash_utils import hash_password
 from utils.database import load_database
 from common.configs import WINDOW_SIZE
@@ -99,7 +99,8 @@ class LoginWindow(BaseWindow):
                 font=("Helvetica", 12),
                 fg="#5f6368",
                 bg="white").pack(anchor="w")
-        self.entry_email = ttk.Entry(email_frame, width=40)
+        self.entry_email = tk.Entry(email_frame, width=40)
+        self.entry_email.insert(tk.END, 'phongnl@abcd.com')
         self.entry_email.pack(pady=(5, 15))
 
         # Password field
@@ -110,7 +111,8 @@ class LoginWindow(BaseWindow):
                 font=("Helvetica", 12),
                 fg="#5f6368",
                 bg="white").pack(anchor="w")
-        self.entry_password = ttk.Entry(password_frame, show="•", width=40)
+        self.entry_password = tk.Entry(password_frame, show="•", width=40)
+        self.entry_password.insert(tk.END, 'Admin@123')
         self.entry_password.pack(pady=(5, 20))
 
         # Login button

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from home.vocabulary_management import VocabularyManagement
+from home.user_management import UserManagement
 from common.colors import COLORS
 from common.configs import WINDOW_SIZE
 
@@ -26,7 +27,7 @@ class DashboardWindow:
         self.sidebar.pack(side="left", fill="y")
 
         # Frame nội dung chính
-        self.main_content = tk.Frame(root, bg="white", width=1000, height=768)
+        self.main_content = tk.Frame(root, width=1000, height=768)
         self.main_content.pack(side="right", fill="both", expand=True)
 
         # Menu điều hướng
@@ -68,7 +69,6 @@ class DashboardWindow:
 
     def show_vocabulary_management(self):
         """Hiển thị giao diện quản lý từ vựng"""
-        """Chuyển đến màn hình Quản lý từ vựng"""
         self.clear_main_frame()
         vocab_ui = VocabularyManagement(self.main_content, self.user)
         vocab_ui.pack(fill="both", expand=True)
@@ -76,6 +76,9 @@ class DashboardWindow:
     def show_user_management(self):
         """Hiển thị giao diện quản lý tài khoản"""
         messagebox.showinfo("Thông báo", "Chức năng này sẽ được thêm sau!")
+        self.clear_main_frame()
+        user_ui = UserManagement(self.main_content, self.user)
+        user_ui.pack(fill="both", expand=True)
 
     def clear_main_frame(self):
         """Xóa tất cả widget bên trong main_frame để chuyển sang giao diện mới."""

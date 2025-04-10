@@ -1,7 +1,7 @@
 COLORS = {
     "primary": "#2C3E50",
     "secondary": "#34495E",
-    "background": "#fafafa",
+    "background": "",
     "text": "#2C3E50",
     "button_bg": "green",
     "button_text": "#FFFFFF",
