@@ -8,7 +8,7 @@ from utils.database import load_word_database, save_word_database
 
 class VocabularyManagement(tk.Frame):
     def __init__(self, parent, user):
-        super().__init__(parent, bg="white")
+        super().__init__(parent)
         self.parent = parent
         self.user = user
 
@@ -44,7 +44,7 @@ class VocabularyManagement(tk.Frame):
 
         self.word_table.pack(pady=10, fill="both", expand=True)
 
-        btn_frame = tk.Frame(self, bg="white")
+        btn_frame = tk.Frame(self)
         btn_frame.pack(pady=5)
         tk.Button(btn_frame, text="📂 Nhập JSON", command=self.import_json).pack(side="left", padx=5)
         

@@ -12,7 +12,7 @@ class RegisterWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("Đăng ký tài khoản")
-        self.root.configure(bg='white')
+        # self.root.configure(bg='white')
 
         # Khởi tạo màn hình ở vị trí giữa cửa sổ
         screen_width = self.root.winfo_screenwidth()
@@ -46,7 +46,7 @@ class RegisterWindow:
         self.image_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Right frame for register form
-        self.right_frame = tk.Frame(root, bg="white")
+        self.right_frame = tk.Frame(root)
         self.right_frame.pack(side="right", fill="both", expand=True, padx=40)
 
         # Create register form
@@ -74,59 +74,57 @@ class RegisterWindow:
         title_label = tk.Label(self.right_frame, 
                              text="English Learning", 
                              font=("Helvetica", 28, "bold"), 
-                             fg="#1a73e8",
-                             bg="white")
+                             fg="#1a73e8")
         title_label.pack(pady=(40, 20))
 
         # Welcome text
         welcome_label = tk.Label(self.right_frame,
                                text="Create your account",
                                font=("Helvetica", 16),
-                               fg="#5f6368",
-                               bg="white")
+                               fg="#5f6368")
         welcome_label.pack(pady=(0, 30))
 
         # Name field
-        name_frame = tk.Frame(self.right_frame, bg="white")
+        name_frame = tk.Frame(self.right_frame)
         name_frame.pack(fill="x", pady=5)
         tk.Label(name_frame, 
                 text="Full Name", 
                 font=("Helvetica", 12),
                 fg="#5f6368",
-                bg="white").pack(anchor="w")
+                ).pack(anchor="w")
         self.entry_name = ttk.Entry(name_frame, width=40)
         self.entry_name.pack(pady=(5, 15))
 
         # Email field
-        email_frame = tk.Frame(self.right_frame, bg="white")
+        email_frame = tk.Frame(self.right_frame)
         email_frame.pack(fill="x", pady=5)
         tk.Label(email_frame, 
                 text="Email", 
                 font=("Helvetica", 12),
                 fg="#5f6368",
-                bg="white").pack(anchor="w")
+                ).pack(anchor="w")
         self.entry_email = ttk.Entry(email_frame, width=40)
         self.entry_email.pack(pady=(5, 15))
 
         # Password field
-        password_frame = tk.Frame(self.right_frame, bg="white")
+        password_frame = tk.Frame(self.right_frame)
         password_frame.pack(fill="x", pady=5)
         tk.Label(password_frame, 
                 text="Password", 
                 font=("Helvetica", 12),
                 fg="#5f6368",
-                bg="white").pack(anchor="w")
+                ).pack(anchor="w")
         self.entry_password = ttk.Entry(password_frame, show="•", width=40)
         self.entry_password.pack(pady=(5, 15))
 
         # Confirm Password field
-        confirm_frame = tk.Frame(self.right_frame, bg="white")
+        confirm_frame = tk.Frame(self.right_frame)
         confirm_frame.pack(fill="x", pady=5)
         tk.Label(confirm_frame, 
                 text="Confirm Password", 
                 font=("Helvetica", 12),
                 fg="#5f6368",
-                bg="white").pack(anchor="w")
+                ).pack(anchor="w")
         self.entry_confirm_password = ttk.Entry(confirm_frame, show="•", width=40)
         self.entry_confirm_password.pack(pady=(5, 20))
 
@@ -150,7 +148,6 @@ class RegisterWindow:
                                 text="Quay lại Đăng nhập", 
                                 command=self.open_login_window,
                                 font=("Helvetica", 12),
-                                bg="white",
                                 fg="#1a73e8",
                                 relief="flat",
                                 cursor="hand2")

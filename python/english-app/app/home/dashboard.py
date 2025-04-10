@@ -19,7 +19,7 @@ class DashboardWindow:
         y = int((screen_height / 2) - (WINDOW_SIZE['HEIGHT'] / 2))
         self.root.geometry(f"{WINDOW_SIZE['WIDTH']}x{WINDOW_SIZE['HEIGHT']}+{x}+{y}")
 
-        self.root.configure(bg=COLORS["background"])  # Set background color
+        # self.root.configure(bg=COLORS["background"])  # Set background color
         self.user = user
 
         # Frame sidebar
@@ -42,10 +42,10 @@ class DashboardWindow:
             if item:
                 btn = tk.Button(
                     self.sidebar, text=item[0],
-                    fg=COLORS["button_text"],
-                    bg=COLORS["button_bg"],
-                    activebackground=COLORS["button_bg"],
-                    activeforeground=COLORS["button_text"],
+                    fg="#ffffff",
+                    bg="#2ECC71",
+                    activebackground="#2ECC71",
+                    activeforeground="#ffffff",
                     font=("Arial", 12),
                     command=item[1], width=20, height=2, relief="flat"
                 )
@@ -58,9 +58,9 @@ class DashboardWindow:
         for widget in self.main_content.winfo_children():
             widget.destroy()
 
-        tk.Label(self.main_content, text="Dashboard", font=("Arial", 16, "bold"), bg=COLORS["background"]).pack(pady=10)
+        tk.Label(self.main_content, text="Dashboard", font=("Arial", 16, "bold")).pack(pady=10)
 
-        stats_frame = tk.Frame(self.main_content, bg=COLORS["background"])
+        stats_frame = tk.Frame(self.main_content)
         stats_frame.pack(pady=10)
 
         ttk.Label(stats_frame, text="Số lượng từ vựng: 0", font=("Arial", 12)).pack(pady=5)
