@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_flutter/domain/entities/post.dart';
-import 'package:todo_flutter/features/poc/presentation/widgets/button_section.dart';
-import 'package:todo_flutter/features/poc/presentation/widgets/image.section.dart';
-import 'package:todo_flutter/features/poc/presentation/widgets/list_post.section.dart';
-import 'package:todo_flutter/features/poc/presentation/widgets/list_view.section.dart';
-import 'package:todo_flutter/features/poc/presentation/widgets/text.section.dart';
-import 'package:todo_flutter/features/poc/presentation/widgets/titile.section.dart';
+import 'package:todo_flutter/features/poc/presentation/widgets/widgets.dart';
 import 'package:todo_flutter/services/post_service.dart';
 
 class HomePage extends StatefulWidget {
