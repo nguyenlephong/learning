@@ -11,7 +11,7 @@ class PostApi {
         'Accept': 'application/json',
       },
     );
-
+    print('Fetch response:  ${response.statusCode}');
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
       return jsonList.map((json) => Post.fromJson(json)).toList();
