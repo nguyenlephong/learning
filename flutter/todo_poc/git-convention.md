@@ -12,8 +12,6 @@
 - **id**: Issue/task number or increment for tracking. _E.g._: `01`, `JIRA-123`
 - **short-description**: Brief, lowercase, dash-separated summary. _E.g._: `login`, `can-not-login`, `update-readme`
 
----
-
 ### Examples
 ```git
 phongnl/docs/05-update-api-docs
@@ -23,8 +21,6 @@ phongnl/test/03-add-auth-tests
 phongnl/refactor/77-optimize-query
 phongnl/chore/12-update-deps
 ```
-
----
 
 ### Tips
 
@@ -52,8 +48,6 @@ Rules:
 - scope: Optional. What part of the codebase? (e.g. api, auth)
 - description: Required. Short, clear, in imperative mood ("add", "fix", not "added", "fixed").
 - body & footer: Optional. More context or extra info (e.g. breaking changes, refs).
-
----
 
 ### Main Types (and Extended Types for Big Projects)
 
@@ -110,7 +104,6 @@ BREAKING CHANGE: Passwords from previous versions are invalid.
 - `v100-rc.1`     (First release candidate build)
 
 
----
 ### Production
 
 **Format:** `v<YY.MM.SPRINT>`
@@ -125,7 +118,6 @@ BREAKING CHANGE: Passwords from previous versions are invalid.
 - `v25.07.02` (Build of sprint 02, July 2025)
 
 
----
 ### Production Backup
 
 **Format:** `v<YY.MM.SPRINT>-<YYMMDD##>`
@@ -142,14 +134,69 @@ BREAKING CHANGE: Passwords from previous versions are invalid.
 - `v25.07.02-25073001` (First build of sprint 02, July 30, 2025)
 
 
----
-
 **Notes:**
 - Use Internal tags for all non-production releases (test, staging, pre-release).
 - Use Production tags only for official releases deployed to external/production environments.
 - Do not include personal or branch information in tags.
 - Consistently follow these formats for clarity and tracking.**
 
+
 ## Merge Request
 
-## Review Checklist
+## [Review Checklist](https://roadmap.sh/best-practices/code-review)
+
+![code-review.png](/docs/conventions/code-review.png)
+
+<details>
+  <summary>API Semantics</summary>
+
+- API as small as possible, as large as needed?
+- Is there one way of doing one thing, not multiple ones?
+- Is it consistent, does it follow the principle of least surprise?
+- Clean split of API/internals without internals leaking into the API?
+- Are there no breaking changes to user-facing parts (API classes, configuration, metrics, log formats, etc)?
+- Is a new API generally useful and not overly specific to a single use case?
+
+</details>
+
+<details>
+  <summary>Code Style</summary>
+
+- Is the project's formatting style applied?
+- Does it adhere to the agreed-upon naming conventions?
+- Is it DRY?
+- Is the code sufficiently "readable" (method lengths, etc.)?
+</details>
+
+<details>
+  <summary>Documentation</summary>
+
+- Are the new features reasonably documented?
+- Are all relevant types of documentation covered, such as README, API docs, user guide, reference docs, etc?
+- Is the documentation understandable and free of significant typos and grammar mistakes?
+</details>
+
+<details>
+  <summary>Implementation Sematics</summary>
+
+
+- Does it satisfy the original requirements?
+- Is it logically correct?
+- Is there no unnecessary complexity?
+- Is it robust (i.e., no concurrency issues, proper error handling, etc.)?
+- Is it performant?
+- Is it secure (i.e., no SQL injections, etc.)?
+- Is it observable (i.e., metrics, logging, tracing, etc.)?
+- Do newly added dependencies pull their weight? Is their license acceptable?
+</details>
+
+<details>
+  <summary>Tests</summary>
+
+- Are all tests passing?
+- Are new features reasonably tested?
+- Are corner cases tested?
+- Is it using unit tests where possible, integration tests where necessary?
+- Are there tests for NFRs, e.g. performance?
+
+</details>
