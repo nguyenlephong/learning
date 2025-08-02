@@ -1,9 +1,15 @@
+using napas_poc.Interfaces;
+using napas_poc.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add DI for services
+builder.Services.AddScoped<IPaymentService, NapasPaymentService>();
 
 var app = builder.Build();
 
@@ -15,6 +21,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
+
+app.MapControllers();
 
 var summaries = new[]
 {
