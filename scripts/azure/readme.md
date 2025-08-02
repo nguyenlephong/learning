@@ -8,7 +8,10 @@
 ```bash
 az --version
 az login
+az account list --output table
+
 az vm list -o table
+az account set --subscription "MyResourceGroup"
 
 az vm start -g MyResourceGroup -n MyVm
 

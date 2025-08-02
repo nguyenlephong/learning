@@ -61,8 +61,8 @@ echo "🌐 VM IP: $IP"
 # ---- SSH vào VM ----
 if [[ -n "$REMOTE_CMD" ]]; then
   echo "▶ Running remote command: $REMOTE_CMD"
-  ssh -i "$SSH_KEY" "$SSH_USER@$IP" "$REMOTE_CMD"
+  ssh -t -i "$SSH_KEY" "$SSH_USER@$IP" "$REMOTE_CMD"
 else
   echo "💻 Connecting to SSH..."
-  ssh -i "$SSH_KEY" "$SSH_USER@$IP"
+  ssh -t -i "$SSH_KEY" "$SSH_USER@$IP"
 fi
