@@ -2,23 +2,34 @@ using System.ComponentModel.DataAnnotations;
 
 public class QRDataRequest
 {
-    [Required(ErrorMessage = "Bank code is required")]
-    [StringLength(10, ErrorMessage = "Bank code cannot exceed 10 characters")]
+    // Required fields
     public string BankCode { get; set; } = string.Empty;       // NAPAS bank code
-
-    [Required(ErrorMessage = "Account number is required")]
-    [StringLength(20, ErrorMessage = "Account number cannot exceed 20 characters")]
     public string AccountNumber { get; set; } = string.Empty;  // Account number to receive payment
 
-    [StringLength(100, ErrorMessage = "Bank name cannot exceed 100 characters")]
-    public string? BankName { get; set; }       // Bank name
-
-    [StringLength(100, ErrorMessage = "Account name cannot exceed 100 characters")]
-    public string? AccountName { get; set; }    // Account holder name
-
-    [Range(0, double.MaxValue, ErrorMessage = "Amount must be greater than or equal to 0")]
-    public decimal Amount { get; set; }        // Payment amount
-
-    [StringLength(200, ErrorMessage = "Description cannot exceed 200 characters")]
-    public string? Description { get; set; }    // Payment description (optional)
+    // Optional fields with defaults
+    public string? PayloadFormatIndicator { get; set; } = "02"; // EMV QR Code format
+    public string? PointOfInitiationMethod { get; set; } = "12"; // 12: Static QR, 11: Dynamic QR
+    public string? MerchantCategoryCode { get; set; } = "0000"; // MCC code
+    public string? TransactionCurrency { get; set; } = "704";   // VND currency code
+    public string? CountryCode { get; set; } = "VN";           // Vietnam country code
+    
+    // Transaction details
+    public decimal? Amount { get; set; }                       // Payment amount
+    public string? AccountName { get; set; }                   // Account holder name
+    public string? BankName { get; set; }                      // Bank name
+    public string? Description { get; set; }                   // Payment description
+    
+    // Additional merchant information
+    public string? MerchantName { get; set; }                  // Merchant name (overrides AccountName)
+    public string? MerchantCity { get; set; }                  // Merchant city (overrides BankName)
+    
+    // Additional data fields
+    public string? Purpose { get; set; }                       // Purpose of transaction
+    public string? ReferenceLabel { get; set; }                // Reference label
+    public string? CustomerLabel { get; set; }                 // Customer label
+    public string? TerminalLabel { get; set; }                 // Terminal label
+    public string? AdditionalConsumerDataRequest { get; set; } // Additional consumer data request
+    
+    // Custom fields for specific use cases
+    public Dictionary<string, string>? CustomFields { get; set; } // Custom EMVCo fields
 }

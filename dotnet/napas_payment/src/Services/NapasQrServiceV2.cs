@@ -1,15 +1,16 @@
 using System.Text;
+using napas_payment.Constants;
 
 namespace napas_payment.Services
 {
-    public class NapasQrService : INapasQrService
+    public interface INapasQrServiceV2
     {
-        public QRDataResponse GenerateQrCode(QRDataRequest request)
-        {
-            return GenerateNapassQr(request);
-        }
+        QRDataResponse GenerateNapasQr(QRDataRequest request);
+    }
 
-        public QRDataResponse GenerateNapassQr(QRDataRequest req)
+    public class NapasQrServiceV2 : INapasQrServiceV2
+    {
+        public QRDataResponse GenerateNapasQr(QRDataRequest req)
         {
             try
             {
@@ -44,10 +45,10 @@ namespace napas_payment.Services
             }
 
             // Payload Format Indicator (Mandatory)
-            Add("00", r.PayloadFormatIndicator ?? "02");
+            Add(NapasQrConstants.PAYLOAD_FORMAT_INDICATOR, r.PayloadFormatIndicator ?? NapasQrConstants.DEFAULT_PAYLOAD_FORMAT);
 
             // Point of Initiation Method (Optional)
-            Add("01", r.PointOfInitiationMethod ?? "12");
+            Add(NapasQrConstants.POINT_OF_INITIATION_METHOD, r.PointOfInitiationMethod ?? NapasQrConstants.DEFAULT_POINT_OF_INITIATION);
 
             // Merchant Account Information (Mandatory for NAPAS)
             string merchantInfo = "";
@@ -58,36 +59,38 @@ namespace napas_payment.Services
             }
             
             // NAPAS Bank Code (Required)
-            AddSub("00", r.BankCode);
+            AddSub(NapasQrConstants.BANK_CODE, r.BankCode);
             
             // Account Number (Required)
-            AddSub("01", r.AccountNumber);
+            AddSub(NapasQrConstants.ACCOUNT_NUMBER, r.AccountNumber);
 
             // Add Merchant Account Information
-            Add("26", merchantInfo);
+            Add(NapasQrConstants.MERCHANT_ACCOUNT_INFORMATION, merchantInfo);
 
             // Merchant Category Code (Optional)
-            Add("52", r.MerchantCategoryCode ?? "0000");
+            Add(NapasQrConstants.MERCHANT_CATEGORY_CODE, r.MerchantCategoryCode ?? NapasQrConstants.DEFAULT_MERCHANT_CATEGORY_CODE);
 
             // Transaction Currency (Mandatory)
-            Add("53", r.TransactionCurrency ?? "704");
+            Add(NapasQrConstants.TRANSACTION_CURRENCY, r.TransactionCurrency ?? NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY);
 
-            // Transaction Amount (Optional)
+            // Transaction Amount (Optional) - Format as VND (no decimal places)
             if (r.Amount.HasValue && r.Amount.Value > 0)
             {
-                Add("54", r.Amount.Value.ToString("F2"));
+                // Convert to VND format (no decimal places)
+                var amountInVND = (long)Math.Round(r.Amount.Value);
+                Add(NapasQrConstants.TRANSACTION_AMOUNT, amountInVND.ToString());
             }
 
             // Country Code (Mandatory)
-            Add("58", r.CountryCode ?? "VN");
+            Add(NapasQrConstants.COUNTRY_CODE, r.CountryCode ?? NapasQrConstants.DEFAULT_COUNTRY_CODE);
 
             // Merchant Name (Optional)
             var merchantName = r.MerchantName ?? r.AccountName ?? "";
-            Add("59", merchantName);
+            Add(NapasQrConstants.MERCHANT_NAME, merchantName);
 
             // Merchant City (Optional)
             var merchantCity = r.MerchantCity ?? r.BankName ?? "";
-            Add("60", merchantCity);
+            Add(NapasQrConstants.MERCHANT_CITY, merchantCity);
 
             // Additional Data Field Template (Optional)
             if (!string.IsNullOrEmpty(r.Description) || 
@@ -104,14 +107,14 @@ namespace napas_payment.Services
                     additionalData += id + val.Length.ToString("D2") + val;
                 }
                 
-                AddAdditional("01", r.Description ?? ""); // Purpose/Description
-                AddAdditional("02", r.Purpose ?? ""); // Purpose
-                AddAdditional("03", r.ReferenceLabel ?? ""); // Reference Label
-                AddAdditional("04", r.CustomerLabel ?? ""); // Customer Label
-                AddAdditional("05", r.TerminalLabel ?? ""); // Terminal Label
-                AddAdditional("06", r.AdditionalConsumerDataRequest ?? ""); // Additional Consumer Data Request
+                AddAdditional(NapasQrConstants.PURPOSE, r.Description ?? ""); // Purpose/Description
+                AddAdditional(NapasQrConstants.PURPOSE_ALT, r.Purpose ?? ""); // Purpose
+                AddAdditional(NapasQrConstants.REFERENCE_LABEL, r.ReferenceLabel ?? ""); // Reference Label
+                AddAdditional(NapasQrConstants.CUSTOMER_LABEL, r.CustomerLabel ?? ""); // Customer Label
+                AddAdditional(NapasQrConstants.TERMINAL_LABEL, r.TerminalLabel ?? ""); // Terminal Label
+                AddAdditional(NapasQrConstants.ADDITIONAL_CONSUMER_DATA_REQUEST, r.AdditionalConsumerDataRequest ?? ""); // Additional Consumer Data Request
                 
-                Add("62", additionalData);
+                Add(NapasQrConstants.ADDITIONAL_DATA_FIELD_TEMPLATE, additionalData);
             }
 
             // Add custom fields if provided
@@ -127,9 +130,9 @@ namespace napas_payment.Services
             }
 
             // CRC will be calculated after all fields
-            var partial = sb.ToString() + "6304";
+            var partial = sb.ToString() + NapasQrConstants.CRC + "04";
             var crc = CRC16_CCITT(partial).ToUpper();
-            sb.Append("63");
+            sb.Append(NapasQrConstants.CRC);
             sb.Append("04");
             sb.Append(crc);
 
@@ -149,4 +152,4 @@ namespace napas_payment.Services
             return crc.ToString("X4");
         }
     }
-}
+} 

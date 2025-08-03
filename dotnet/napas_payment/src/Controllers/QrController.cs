@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using napas_payment.Services;
 
 [ApiController]
 [Route("api/qr")]
@@ -16,11 +16,10 @@ public class QrController : ControllerBase
     /// Generate NAPAS QR code according to EMVCo standards
     /// </summary>
     /// <param name="request">QR code generation request</param>
-    /// <returns>QR code data and image</returns>
+    /// <returns>QR code raw data</returns>
     [HttpPost("napas")]
     public ActionResult<QRDataResponse> GenerateNapasQr([FromBody] QRDataRequest request)
     {
-        // Validate request
         if (request == null)
         {
             return BadRequest(new QRDataResponse 
@@ -30,24 +29,17 @@ public class QrController : ControllerBase
             });
         }
 
-        // Validate required fields
-        var validationResults = new List<ValidationResult>();
-        var validationContext = new ValidationContext(request);
+        var result = _qrService.GenerateNapassQr(request);
         
-        if (!Validator.TryValidateObject(request, validationContext, validationResults, true))
+        if (!result.IsValid)
         {
-            var errors = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
-            return BadRequest(new QRDataResponse 
-            { 
-                IsValid = false, 
-                ErrorMessage = errors 
-            });
+            return BadRequest(result);
         }
 
         try
         {
-            var result = _qrService.GenerateNapassQr(request);
-            return Ok(result);
+            var result2 = _qrService.GenerateNapassQr(request);
+            return Ok(result2);
         }
         catch (Exception ex)
         {
@@ -57,6 +49,7 @@ public class QrController : ControllerBase
                 ErrorMessage = $"Error generating QR code: {ex.Message}" 
             });
         }
+        return Ok(result);
     }
 
     /// <summary>
@@ -67,47 +60,48 @@ public class QrController : ControllerBase
     [HttpPost("napas/raw")]
     public ActionResult<QRDataResponse> GetNapasQrRaw([FromBody] QRDataRequest request)
     {
-        // Validate request
-        if (request == null)
-        {
-            return BadRequest(new QRDataResponse 
-            { 
-                IsValid = false, 
-                ErrorMessage = "Request cannot be null" 
-            });
-        }
+        // // Validate request
+        // if (request == null)
+        // {
+        //     return BadRequest(new QRDataResponse 
+        //     { 
+        //         IsValid = false, 
+        //         ErrorMessage = "Request cannot be null" 
+        //     });
+        // }
 
-        // Validate required fields
-        var validationResults = new List<ValidationResult>();
-        var validationContext = new ValidationContext(request);
+        // // Validate required fields
+        // var validationResults = new List<ValidationResult>();
+        // var validationContext = new ValidationContext(request);
         
-        if (!Validator.TryValidateObject(request, validationContext, validationResults, true))
-        {
-            var errors = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
-            return BadRequest(new QRDataResponse 
-            { 
-                IsValid = false, 
-                ErrorMessage = errors 
-            });
-        }
+        // if (!Validator.TryValidateObject(request, validationContext, validationResults, true))
+        // {
+        //     var errors = string.Join("; ", validationResults.Select(v => v.ErrorMessage));
+        //     return BadRequest(new QRDataResponse 
+        //     { 
+        //         IsValid = false, 
+        //         ErrorMessage = errors 
+        //     });
+        // }
 
-        try
-        {
-            var result = _qrService.GenerateNapassQr(request);
-            // Return only raw data without image
-            return Ok(new QRDataResponse 
-            { 
-                RawData = result.RawData,
-                IsValid = true
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new QRDataResponse 
-            { 
-                IsValid = false, 
-                ErrorMessage = $"Error generating QR code: {ex.Message}" 
-            });
-        }
+        // try
+        // {
+        //     var result = _qrService.GenerateNapassQr(request);
+        //     // Return only raw data without image
+        //     return Ok(new QRDataResponse 
+        //     { 
+        //         RawData = result.RawData,
+        //         IsValid = true
+        //     });
+        // }
+        // catch (Exception ex)
+        // {
+        //     return StatusCode(500, new QRDataResponse 
+        //     { 
+        //         IsValid = false, 
+        //         ErrorMessage = $"Error generating QR code: {ex.Message}" 
+        //     });
+        // }
+        return Ok(200);
     }
 }
