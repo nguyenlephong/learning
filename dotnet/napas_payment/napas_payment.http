@@ -1,6 +1,78 @@
-@napas_payment_HostAddress = http://localhost:5126
+### NAPAS QR Code Generation API Tests
 
-GET {{napas_payment_HostAddress}}/weatherforecast/
-Accept: application/json
+### 1. Generate NAPAS QR Code with all fields
+POST {{baseUrl}}/api/qr/napas
+Content-Type: application/json
 
-###
+{
+  "bankCode": "970416",
+  "accountNumber": "1234567890",
+  "bankName": "Vietcombank",
+  "accountName": "Nguyen Van A",
+  "amount": 100000.50,
+  "description": "Payment for services"
+}
+
+### 2. Generate NAPAS QR Code with minimal required fields
+POST {{baseUrl}}/api/qr/napas
+Content-Type: application/json
+
+{
+  "bankCode": "970436",
+  "accountNumber": "9876543210",
+  "amount": 50000.00
+}
+
+### 3. Generate NAPAS QR Code without amount (static QR)
+POST {{baseUrl}}/api/qr/napas
+Content-Type: application/json
+
+{
+  "bankCode": "970416",
+  "accountNumber": "1234567890",
+  "bankName": "Vietcombank",
+  "accountName": "Nguyen Van A",
+  "description": "Static QR for payments"
+}
+
+### 4. Get QR code raw data only (without image)
+POST {{baseUrl}}/api/qr/napas/raw
+Content-Type: application/json
+
+{
+  "bankCode": "970416",
+  "accountNumber": "1234567890",
+  "bankName": "Vietcombank",
+  "accountName": "Nguyen Van A",
+  "amount": 100000.50,
+  "description": "Payment for services"
+}
+
+### 5. Test validation - missing required fields
+POST {{baseUrl}}/api/qr/napas
+Content-Type: application/json
+
+{
+  "bankName": "Vietcombank",
+  "accountName": "Nguyen Van A",
+  "amount": 100000.50
+}
+
+### 6. Test validation - invalid amount
+POST {{baseUrl}}/api/qr/napas
+Content-Type: application/json
+
+{
+  "bankCode": "970416",
+  "accountNumber": "1234567890",
+  "amount": -100.00
+}
+
+### 7. Test validation - empty request
+POST {{baseUrl}}/api/qr/napas
+Content-Type: application/json
+
+{}
+
+### Variables
+@baseUrl = https://localhost:7001

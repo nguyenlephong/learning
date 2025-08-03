@@ -12,7 +12,7 @@ public class NapasQrService : INapasQrService
     {
         var raw = GenerateEmvcoNapassQrRaw(req);
 
-        // Tạo QR Image (base64)
+        // Generate QR Image (base64)
         using var qrGenerator = new QRCodeGenerator();
         using var qrData = qrGenerator.CreateQrCode(raw, QRCodeGenerator.ECCLevel.Q);
         using var qrCode = new PngByteQRCode(qrData);
@@ -28,8 +28,8 @@ public class NapasQrService : INapasQrService
 
     private string GenerateEmvcoNapassQrRaw(QRDataRequest r)
     {
-        // EMVCo format: ID(length) + Value
-        // Ví dụ: "00" + "02" + "01" = "000201"
+        // EMVCo QR Code format: ID(length) + Value
+        // Example: "00" + "02" + "01" = "000201"
         var sb = new StringBuilder();
 
         void Add(string id, string val)
@@ -40,28 +40,64 @@ public class NapasQrService : INapasQrService
             sb.Append(val);
         }
 
-        Add("00", "01"); // Payload Format Indicator
-        Add("01", "12"); // Point of Initiation Method (12: static QR)
-        Add("38", r.BankCode); // NAPAS bank code (required)
+        // Payload Format Indicator (Mandatory)
+        Add("00", "02"); // EMV QR Code
 
-        // Merchant Account Information (for NAPAS QR)
+        // Point of Initiation Method (Optional)
+        Add("01", "12"); // 12: Static QR Code
+
+        // Merchant Account Information (Mandatory for NAPAS)
         string merchantInfo = "";
         void AddSub(string id, string val)
         {
             if (string.IsNullOrEmpty(val)) return;
             merchantInfo += id + val.Length.ToString("D2") + val;
         }
-        AddSub("00", r.BankCode); // Bank code
-        AddSub("01", r.AccountNumber); // Account Number
+        
+        // NAPAS Bank Code (Required)
+        AddSub("00", r.BankCode);
+        
+        // Account Number (Required)
+        AddSub("01", r.AccountNumber);
 
-        Add("38", merchantInfo);
+        // Add Merchant Account Information
+        Add("26", merchantInfo);
 
-        Add("54", r.Amount > 0 ? r.Amount.ToString("F2") : null); // Amount
-        Add("59", r.AccountName); // Account Holder Name
-        Add("60", r.BankName); // Bank Name
+        // Merchant Category Code (Optional)
+        Add("52", "0000"); // Default MCC for general purpose
 
-        // Optional: Purpose/Description
-        Add("62", r.Description);
+        // Transaction Currency (Mandatory)
+        Add("53", "704"); // VND currency code
+
+        // Transaction Amount (Optional)
+        if (r.Amount > 0)
+        {
+            Add("54", r.Amount.ToString("F2"));
+        }
+
+        // Country Code (Mandatory)
+        Add("58", "VN");
+
+        // Merchant Name (Optional)
+        Add("59", r.AccountName ?? "");
+
+        // Merchant City (Optional)
+        Add("60", r.BankName ?? "");
+
+        // Additional Data Field Template (Optional)
+        if (!string.IsNullOrEmpty(r.Description))
+        {
+            string additionalData = "";
+            void AddAdditional(string id, string val)
+            {
+                if (string.IsNullOrEmpty(val)) return;
+                additionalData += id + val.Length.ToString("D2") + val;
+            }
+            
+            AddAdditional("01", r.Description); // Purpose/Description
+            
+            Add("62", additionalData);
+        }
 
         // CRC will be calculated after all fields
         var partial = sb.ToString() + "6304";
