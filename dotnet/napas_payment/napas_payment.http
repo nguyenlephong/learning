@@ -1,0 +1,6 @@
+@napas_payment_HostAddress = http://localhost:5126
+
+GET {{napas_payment_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
