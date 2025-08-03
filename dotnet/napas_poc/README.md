@@ -17,4 +17,8 @@ dotnet dev-certs https --trust
 dotnet watch run
 
 dotnet build
+
+dotnet run --project . test.cs
+
+dotnet run --no-build
 ```

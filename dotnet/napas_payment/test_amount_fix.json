@@ -1,0 +1,98 @@
+{
+  "test_cases": [
+    {
+      "name": "Personal use - Amount 1000 VND",
+      "description": "Test amount formatting for personal use",
+      "request": {
+        "bankCode": "970423",
+        "accountNumber": "0326581276",
+        "bankName": "Ngân hàng TMCP Tiên Phong",
+        "accountName": "NGUYEN THI AI",
+        "amount": 1000,
+        "description": "Personal payment"
+      },
+      "expected_amount": "1000",
+      "expected_point_of_initiation": "11"
+    },
+    {
+      "name": "Personal use - Amount 50000 VND",
+      "description": "Test amount formatting for larger amount",
+      "request": {
+        "bankCode": "970416",
+        "accountNumber": "1234567890",
+        "bankName": "Vietcombank",
+        "accountName": "Nguyen Van A",
+        "amount": 50000,
+        "description": "Personal transfer"
+      },
+      "expected_amount": "50000",
+      "expected_point_of_initiation": "11"
+    },
+    {
+      "name": "Personal use - Amount with decimal (should be rounded)",
+      "description": "Test amount with decimal places",
+      "request": {
+        "bankCode": "970436",
+        "accountNumber": "9876543210",
+        "bankName": "BIDV",
+        "accountName": "Tran Thi B",
+        "amount": 1000.50,
+        "description": "Personal payment with decimal"
+      },
+      "expected_amount": "1001",
+      "expected_point_of_initiation": "11"
+    },
+    {
+      "name": "Merchant use - Static QR",
+      "description": "Test merchant static QR",
+      "request": {
+        "bankCode": "970416",
+        "accountNumber": "1234567890",
+        "bankName": "Vietcombank",
+        "accountName": "Nguyen Van A",
+        "pointOfInitiationMethod": "12",
+        "description": "Merchant static QR"
+      },
+      "expected_amount": null,
+      "expected_point_of_initiation": "12"
+    },
+    {
+      "name": "Merchant use - Dynamic QR with amount",
+      "description": "Test merchant dynamic QR with amount",
+      "request": {
+        "bankCode": "970416",
+        "accountNumber": "1234567890",
+        "bankName": "Vietcombank",
+        "accountName": "Nguyen Van A",
+        "amount": 100000,
+        "pointOfInitiationMethod": "11",
+        "merchantCategoryCode": "5411",
+        "description": "Merchant dynamic QR"
+      },
+      "expected_amount": "100000",
+      "expected_point_of_initiation": "11"
+    },
+    {
+      "name": "Personal use - No amount specified",
+      "description": "Test personal QR without amount",
+      "request": {
+        "bankCode": "970423",
+        "accountNumber": "0326581276",
+        "bankName": "Ngân hàng TMCP Tiên Phong",
+        "accountName": "NGUYEN THI AI",
+        "description": "Personal QR without amount"
+      },
+      "expected_amount": null,
+      "expected_point_of_initiation": "11"
+    }
+  ],
+  "api_endpoints": {
+    "qr_data": "POST https://localhost:7001/api/napas/qr",
+    "qr_image": "POST https://localhost:7001/api/qr-image/napas"
+  },
+  "notes": {
+    "amount_format": "Amount is now formatted as VND without decimal places (e.g., 1000 instead of 1000.00)",
+    "default_behavior": "Default is now personal use (Dynamic QR) instead of merchant (Static QR)",
+    "point_of_initiation": "11 = Dynamic QR (personal), 12 = Static QR (merchant)"
+  }
+} 
