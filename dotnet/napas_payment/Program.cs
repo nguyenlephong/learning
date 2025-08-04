@@ -9,9 +9,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 // Register QR code services
-builder.Services.AddScoped<INapasQrService, NapasQrService>();
-builder.Services.AddScoped<INapasQrServiceV2, NapasQrServiceV2>();
-builder.Services.AddScoped<IQrCodeServiceFactory, QrCodeServiceFactory>();
+// builder.Services.AddScoped<INapasQrServiceV2, NapasQrServiceV2>();
 builder.Services.AddScoped<IQrImageService, QrImageService>();
 builder.Services.AddScoped<IVietQRService, VietQRService>();
 

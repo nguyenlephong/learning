@@ -3,6 +3,7 @@ using napas_payment.Services;
 
 [ApiController]
 [Route("api/napas")]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class NapasQrController : ControllerBase
 {
     private readonly INapasQrServiceV2 _qrService;

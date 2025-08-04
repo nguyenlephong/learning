@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using napas_payment.Services;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/viet-qr")]
 public class VietQRController : ControllerBase
 {
     private readonly IVietQRService _vietQRService;
@@ -22,53 +22,13 @@ public class VietQRController : ControllerBase
                 return BadRequest(new VietQRResponse
                 {
                     Success = false,
-                    Message = "BankBIN và AccountNumber không được để trống"
+                    Message = "Please provide a valid Bank BIN and account number."
                 });
             }
 
-            var qrCode = _vietQRService.GenerateWithParams(
+            var qrCode = _vietQRService.Create(
                 request.OneTime,
                 request.ServiceType,
-                request.Amount,
-                request.BankBIN,
-                request.AccountNumber,
-                request.Note,
-                request.Currency,
-                request.CountryCode
-            );
-
-            return Ok(new VietQRResponse
-            {
-                QRCode = qrCode,
-                Success = true,
-                Message = "Tạo mã QR thành công"
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new VietQRResponse
-            {
-                Success = false,
-                Message = $"Lỗi: {ex.Message}"
-            });
-        }
-    }
-
-    [HttpPost("generate-simple")]
-    public ActionResult<VietQRResponse> GenerateSimple([FromBody] VietQRRequest request)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(request.BankBIN) || string.IsNullOrEmpty(request.AccountNumber))
-            {
-                return BadRequest(new VietQRResponse
-                {
-                    Success = false,
-                    Message = "BankBIN và AccountNumber không được để trống"
-                });
-            }
-
-            var qrCode = _vietQRService.Generate(
                 request.Amount,
                 request.BankBIN,
                 request.AccountNumber,
@@ -79,7 +39,7 @@ public class VietQRController : ControllerBase
             {
                 QRCode = qrCode,
                 Success = true,
-                Message = "Tạo mã QR thành công"
+                Message = "SUCCESS"
             });
         }
         catch (Exception ex)
@@ -87,8 +47,9 @@ public class VietQRController : ControllerBase
             return StatusCode(500, new VietQRResponse
             {
                 Success = false,
-                Message = $"Lỗi: {ex.Message}"
+                Message = $"Error: {ex.Message}"
             });
         }
     }
+
 }

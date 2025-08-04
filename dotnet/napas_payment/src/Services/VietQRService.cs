@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 public interface IVietQRService
 {
     string Generate(double amount, string bankBIN, string accountNumber, string note);
+    string Create(bool onetime, string serviceType, double amount, string bankBIN, string accountNumber, string note);
     string GenerateWithParams(bool onetime, string serviceType, double amount, string bankBIN,
         string accountNumber, string note, string currency, string countryCode);
 }
@@ -55,6 +56,11 @@ public class VietQRService : IVietQRService
     }
 
     public string Generate(double amount, string bankBIN, string accountNumber, string note)
+    {
+        return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, "VND", "VN");
+    }
+
+    public string Create(bool onetime, string serviceType, double amount, string bankBIN, string accountNumber, string note)
     {
         return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, "VND", "VN");
     }
