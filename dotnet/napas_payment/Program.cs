@@ -13,6 +13,21 @@ builder.Services.AddScoped<INapasQrService, NapasQrService>();
 builder.Services.AddScoped<INapasQrServiceV2, NapasQrServiceV2>();
 builder.Services.AddScoped<IQrCodeServiceFactory, QrCodeServiceFactory>();
 builder.Services.AddScoped<IQrImageService, QrImageService>();
+builder.Services.AddScoped<IVietQRService, VietQRService>();
+
+
+// Add this line to disable nullable warnings
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = null;
+});
+
+// Or configure JSON serialization
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = null;
+    options.SerializerOptions.AllowTrailingCommas = true;
+});
 
 var app = builder.Build();
 
