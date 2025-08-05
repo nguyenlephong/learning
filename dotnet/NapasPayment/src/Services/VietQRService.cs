@@ -4,10 +4,10 @@ using NapasPayment.Constants;
 
 public interface IVietQRService
 {
-  string Generate(double amount, string bankBIN, string accountNumber, string note);
-  string Create(bool onetime, string serviceType, double amount, string bankBIN, string accountNumber, string note);
+  string Generate(double amount, string bankBin, string accountNumber, string note);
+  string Create(bool onetime, string serviceType, double amount, string bankBin, string accountNumber, string note);
 
-  string GenerateWithParams(bool onetime, string serviceType, double amount, string bankBIN,
+  string GenerateWithParams(bool onetime, string serviceType, double amount, string bankBin,
     string accountNumber, string note, string currency, string countryCode);
 
   string GenerateWithAllParams(VietQRFullRequest request);
@@ -15,48 +15,11 @@ public interface IVietQRService
 
 public class VietQRService : IVietQRService
 {
-  private static readonly Dictionary<char, char> VnMap = new()
-  {
-    { 'ạ', 'a' }, { 'ả', 'a' }, { 'ã', 'a' }, { 'à', 'a' }, { 'á', 'a' }, { 'â', 'a' }, { 'ậ', 'a' }, { 'ầ', 'a' },
-    { 'ấ', 'a' },
-    { 'ẩ', 'a' }, { 'ẫ', 'a' }, { 'ă', 'a' }, { 'ắ', 'a' }, { 'ằ', 'a' }, { 'ặ', 'a' }, { 'ẳ', 'a' }, { 'ẵ', 'a' },
-    { 'ó', 'o' }, { 'ò', 'o' }, { 'ọ', 'o' }, { 'õ', 'o' }, { 'ỏ', 'o' }, { 'ô', 'o' }, { 'ộ', 'o' }, { 'ổ', 'o' },
-    { 'ỗ', 'o' },
-    { 'ồ', 'o' }, { 'ố', 'o' }, { 'ơ', 'o' }, { 'ờ', 'o' }, { 'ớ', 'o' }, { 'ợ', 'o' }, { 'ở', 'o' }, { 'ỡ', 'o' },
-    { 'é', 'e' }, { 'è', 'e' }, { 'ẻ', 'e' }, { 'ẹ', 'e' }, { 'ẽ', 'e' }, { 'ê', 'e' }, { 'ế', 'e' }, { 'ề', 'e' },
-    { 'ệ', 'e' }, { 'ể', 'e' }, { 'ễ', 'e' },
-    { 'ú', 'u' }, { 'ù', 'u' }, { 'ụ', 'u' }, { 'ủ', 'u' }, { 'ũ', 'u' }, { 'ư', 'u' }, { 'ự', 'u' }, { 'ữ', 'u' },
-    { 'ử', 'u' }, { 'ừ', 'u' }, { 'ứ', 'u' },
-    { 'í', 'i' }, { 'ì', 'i' }, { 'ị', 'i' }, { 'ỉ', 'i' }, { 'ĩ', 'i' },
-    { 'ý', 'y' }, { 'ỳ', 'y' }, { 'ỷ', 'y' }, { 'ỵ', 'y' }, { 'ỹ', 'y' },
-    { 'đ', 'd' },
-    { 'Ạ', 'A' }, { 'Ả', 'A' }, { 'Ã', 'A' }, { 'À', 'A' }, { 'Á', 'A' }, { 'Â', 'A' }, { 'Ậ', 'A' }, { 'Ầ', 'A' },
-    { 'Ấ', 'A' },
-    { 'Ẩ', 'A' }, { 'Ẫ', 'A' }, { 'Ă', 'A' }, { 'Ắ', 'A' }, { 'Ằ', 'A' }, { 'Ặ', 'A' }, { 'Ẳ', 'A' }, { 'Ẵ', 'A' },
-    { 'Ó', 'O' }, { 'Ò', 'O' }, { 'Ọ', 'O' }, { 'Õ', 'O' }, { 'Ỏ', 'O' }, { 'Ô', 'O' }, { 'Ộ', 'O' }, { 'Ổ', 'O' },
-    { 'Ỗ', 'O' },
-    { 'Ồ', 'O' }, { 'Ố', 'O' }, { 'Ơ', 'O' }, { 'Ờ', 'O' }, { 'Ớ', 'O' }, { 'Ợ', 'O' }, { 'Ở', 'O' }, { 'Ỡ', 'O' },
-    { 'É', 'E' }, { 'È', 'E' }, { 'Ẻ', 'E' }, { 'Ẹ', 'E' }, { 'Ẽ', 'E' }, { 'Ê', 'E' }, { 'Ế', 'E' }, { 'Ề', 'E' },
-    { 'Ệ', 'E' }, { 'Ể', 'E' }, { 'Ễ', 'E' },
-    { 'Ú', 'U' }, { 'Ù', 'U' }, { 'Ụ', 'U' }, { 'Ủ', 'U' }, { 'Ũ', 'U' }, { 'Ư', 'U' }, { 'Ự', 'U' }, { 'Ữ', 'U' },
-    { 'Ử', 'U' }, { 'Ừ', 'U' }, { 'Ứ', 'U' },
-    { 'Í', 'I' }, { 'Ì', 'I' }, { 'Ị', 'I' }, { 'Ỉ', 'I' }, { 'Ĩ', 'I' },
-    { 'Ý', 'Y' }, { 'Ỳ', 'Y' }, { 'Ỷ', 'Y' }, { 'Ỵ', 'Y' }, { 'Ỹ', 'Y' },
-    { 'Đ', 'D' }
-  };
+  private static readonly IReadOnlyDictionary<char, char> VnMap = NapasQrConstants.VnCharactersMap;
 
-  private static readonly Dictionary<string, string> CountryCodes = new()
-  {
-    { "JP", "Japan" }, { "KR", "Korea" }, { "MY", "Malaysia" }, { "RC", "China" },
-    { "RI", "Indonesia" }, { "RP", "Philippines" }, { "SG", "Singapore" },
-    { "TH", "Thailand" }, { "VN", "Viet Nam" }
-  };
+  private static readonly IReadOnlyDictionary<string, string> CountryCodes = NapasQrConstants.CountryCodes;
 
-  private static readonly Dictionary<string, string> CurrencyMap = new()
-  {
-    { "JPY", "392" }, { "KRW", "410" }, { "MYR", "458" }, { "CNY", "156" },
-    { "IDR", "360" }, { "PHP", "608" }, { "SGD", "702" }, { "THB", "764" }, { "VND", "704" }
-  };
+  private static readonly IReadOnlyDictionary<string, string> CurrencyMap = NapasQrConstants.CurrencyMap;
 
   private static readonly ushort[] IsoIec13239Data = new ushort[256];
   private const ushort CrcInit = 0xFFFF;
@@ -67,29 +30,30 @@ public class VietQRService : IVietQRService
     InitCrcTable();
   }
 
-  public string Generate(double amount, string bankBIN, string accountNumber, string note)
+  public string Generate(double amount, string bankBin, string accountNumber, string note)
   {
-    return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY, NapasQrConstants.DEFAULT_COUNTRY_CODE);
+    return GenerateWithParams(true, NapasQrConstants.DEFAULT_SERVICE_TYPE, amount, bankBin, accountNumber, note, NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY, NapasQrConstants.DEFAULT_COUNTRY_CODE);
   }
 
-  public string Create(bool onetime, string serviceType, double amount, string bankBIN, string accountNumber,
+  public string Create(bool onetime, string serviceType, double amount, string bankBin, string accountNumber,
     string note)
   {
-    return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY, NapasQrConstants.DEFAULT_COUNTRY_CODE);
+    return GenerateWithParams(true, NapasQrConstants.DEFAULT_SERVICE_TYPE, amount, bankBin, accountNumber, note, NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY, NapasQrConstants.DEFAULT_COUNTRY_CODE);
   }
 
-  public string GenerateWithParams(bool onetime, string serviceType, double amount, string bankBIN,
+  public string GenerateWithParams(bool onetime, string serviceType, double amount, string bankBin,
     string accountNumber, string note, string currency, string countryCode)
   {
     // Validate inputs
-    if (string.IsNullOrEmpty(bankBIN) || string.IsNullOrEmpty(accountNumber)) return "";
+    if (string.IsNullOrEmpty(bankBin) || string.IsNullOrEmpty(accountNumber)) return "";
+    if (double.IsNaN(amount) || amount < 0) return "";
 
     var contents = new Dictionary<string, string>
     {
       [NapasQrConstants.PAYLOAD_FORMAT_INDICATOR] = "01",
       [NapasQrConstants.POINT_OF_INITIATION_METHOD] = onetime ? NapasQrConstants.STATIC_QR : NapasQrConstants.DYNAMIC_QR,
       ["3800"] = "A000000727",
-      ["380100"] = bankBIN,
+      ["380100"] = bankBin,
       ["380101"] = accountNumber
     };
 
@@ -120,7 +84,7 @@ public class VietQRService : IVietQRService
     }
 
     // Add amount if greater than 0
-    if (!double.IsNaN(amount) && amount > 0)
+    if (!double.IsNaN(amount) && amount >= 0)
     {
       contents[NapasQrConstants.TRANSACTION_AMOUNT] = ((int)amount).ToString();
     }
@@ -147,13 +111,15 @@ public class VietQRService : IVietQRService
   {
     if (request == null) return "";
 
+    if (double.IsNaN(request.TransactionAmount) ||  request.TransactionAmount < 0) return "";
+
     var contents = new Dictionary<string, string>();
 
     // Payload Format Indicator (00)
-    contents[NapasQrConstants.PAYLOAD_FORMAT_INDICATOR] = request.PayloadFormatIndicator ?? "01";
+    contents[NapasQrConstants.PAYLOAD_FORMAT_INDICATOR] = request.PayloadFormatIndicator ?? NapasQrConstants.DEFAULT_PAYLOAD_FORMAT;
 
     // Point of Initiation Method (01)
-    contents[NapasQrConstants.POINT_OF_INITIATION_METHOD] = request.PointOfInitiationMethod ?? (request.OneTime ? "12" : "11");
+    contents[NapasQrConstants.POINT_OF_INITIATION_METHOD] = request.PointOfInitiationMethod ?? (request.OneTime ? NapasQrConstants.STATIC_QR : NapasQrConstants.DYNAMIC_QR);
 
     // Merchant Category Code (52)
     if (!string.IsNullOrEmpty(request.MerchantCategoryCode))
@@ -173,7 +139,7 @@ public class VietQRService : IVietQRService
     }
 
     // Transaction Amount (54)
-    if (request.TransactionAmount > 0)
+    if (request.TransactionAmount >= 0)
     {
       contents[NapasQrConstants.TRANSACTION_AMOUNT] = ((int)request.TransactionAmount).ToString();
     }

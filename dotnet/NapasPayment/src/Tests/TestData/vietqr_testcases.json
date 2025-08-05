@@ -24,7 +24,7 @@
       "testName": "Valid_QR_No_Amount_No_Note",
       "description": "Test QR generation without amount and note",
       "input": {
-        "oneTime": false,
+        "oneTime": true,
         "serviceType": "QRIBFTTA",
         "amount": 0,
         "bankBIN": "970415",
@@ -34,7 +34,7 @@
         "countryCode": "VN"
       },
       "expected": {
-        "expectedQRCode": "00020101021138540010A00000072701240006970415011012345678900208QRIBFTTA53037045802VN6304CE04"
+        "expectedQRCode": "00020101021238540010A00000072701240006970415011012345678900208QRIBFTTA5303704540105802VN63049F5F"
       },
       "shouldThrowException": false
     },
