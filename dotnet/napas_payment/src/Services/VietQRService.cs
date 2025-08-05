@@ -7,6 +7,7 @@ public interface IVietQRService
     string Create(bool onetime, string serviceType, double amount, string bankBIN, string accountNumber, string note);
     string GenerateWithParams(bool onetime, string serviceType, double amount, string bankBIN,
         string accountNumber, string note, string currency, string countryCode);
+    string GenerateWithAllParams(VietQRFullRequest request);
 }
 
 public class VietQRService : IVietQRService
@@ -117,6 +118,129 @@ public class VietQRService : IVietQRService
         if (!string.IsNullOrEmpty(note?.Trim()))
         {
             contents["6208"] = ToAscii(note.Trim());
+        }
+
+        try
+        {
+            var output = GenerateObject(GetDefaults(), "", "", contents) + "6304";
+            return output + CrcChecksum(output);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error generating QR code: {ex.Message}", ex);
+        }
+    }
+
+    public string GenerateWithAllParams(VietQRFullRequest request)
+    {
+        if (request == null)
+            throw new ArgumentException("Request cannot be null");
+
+        var contents = new Dictionary<string, string>();
+
+        // Payload Format Indicator (00)
+        contents["00"] = request.PayloadFormatIndicator ?? "01";
+
+        // Point of Initiation Method (01)
+        contents["01"] = request.PointOfInitiationMethod ?? (request.OneTime ? "12" : "11");
+
+        // Merchant Category Code (52)
+        if (!string.IsNullOrEmpty(request.MerchantCategoryCode))
+        {
+            contents["52"] = request.MerchantCategoryCode;
+        }
+
+        // Transaction Currency (53)
+        if (!string.IsNullOrEmpty(request.TransactionCurrency))
+        {
+            var currencyCode = CurrencyMap.GetValueOrDefault(request.TransactionCurrency, request.TransactionCurrency);
+            contents["53"] = currencyCode;
+        }
+        else
+        {
+            contents["53"] = "704"; // Default VND
+        }
+
+        // Transaction Amount (54)
+        if (request.TransactionAmount > 0)
+        {
+            contents["54"] = ((int)request.TransactionAmount).ToString();
+        }
+
+        // Country Code (58)
+        contents["58"] = request.CountryCode ?? "VN";
+
+        // Merchant Name (59)
+        if (!string.IsNullOrEmpty(request.MerchantName))
+        {
+            contents["59"] = ToAscii(request.MerchantName);
+        }
+
+        // Merchant City (60)
+        if (!string.IsNullOrEmpty(request.MerchantCity))
+        {
+            contents["60"] = ToAscii(request.MerchantCity);
+        }
+
+        // Purpose (62)
+        if (!string.IsNullOrEmpty(request.Purpose))
+        {
+            contents["62"] = request.Purpose;
+        }
+
+        // Reference Label (63)
+        if (!string.IsNullOrEmpty(request.ReferenceLabel))
+        {
+            contents["63"] = request.ReferenceLabel;
+        }
+
+        // Customer Label (64)
+        if (!string.IsNullOrEmpty(request.CustomerLabel))
+        {
+            contents["64"] = request.CustomerLabel;
+        }
+
+        // Terminal Label (65)
+        if (!string.IsNullOrEmpty(request.TerminalLabel))
+        {
+            contents["65"] = request.TerminalLabel;
+        }
+
+        // Additional Consumer Data Request (67)
+        if (!string.IsNullOrEmpty(request.AdditionalConsumerDataRequest))
+        {
+            contents["67"] = request.AdditionalConsumerDataRequest;
+        }
+
+        // Merchant Account Information (38)
+        if (!string.IsNullOrEmpty(request.BankBIN) && !string.IsNullOrEmpty(request.AccountNumber))
+        {
+            contents["3800"] = "A000000727";
+            contents["380100"] = request.BankBIN;
+            contents["380101"] = request.AccountNumber;
+            
+            if (!string.IsNullOrEmpty(request.ServiceType))
+            {
+                contents["3802"] = request.ServiceType;
+            }
+        }
+
+        // Additional Data Field Template (62)
+        if (!string.IsNullOrEmpty(request.Note))
+        {
+            contents["6208"] = ToAscii(request.Note.Trim());
+        }
+
+        // Custom Fields
+        if (request.CustomFields != null)
+        {
+            foreach (var field in request.CustomFields)
+            {
+                if (!string.IsNullOrEmpty(field.Key) && !string.IsNullOrEmpty(field.Value))
+                {
+                    contents[field.Key] = field.Value;
+                }
+            }
         }
 
         try

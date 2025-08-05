@@ -52,4 +52,37 @@ public class VietQRController : ControllerBase
         }
     }
 
+    [HttpPost("generate-full")]
+    public ActionResult<VietQRResponse> GenerateFull([FromBody] VietQRFullRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(request.BankBIN) || string.IsNullOrEmpty(request.AccountNumber))
+            {
+                return BadRequest(new VietQRResponse
+                {
+                    Success = false,
+                    Message = "Please provide a valid Bank BIN and account number."
+                });
+            }
+
+            var qrCode = _vietQRService.GenerateWithAllParams(request);
+
+            return Ok(new VietQRResponse
+            {
+                QRCode = qrCode,
+                Success = true,
+                Message = "SUCCESS"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new VietQRResponse
+            {
+                Success = false,
+                Message = $"Error: {ex.Message}"
+            });
+        }
+    }
+
 }
