@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using napas_payment.Services;
+using NapasPayment.Services;
 
 [ApiController]
 [Route("api/viet-qr")]

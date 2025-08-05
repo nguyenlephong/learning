@@ -1,6 +1,6 @@
 using QRCoder;
 
-namespace napas_payment.Services
+namespace NapasPayment.Services
 {
     public interface IQrImageService
     {

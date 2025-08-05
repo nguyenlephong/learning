@@ -1,4 +1,4 @@
-using napas_payment.Services;
+using NapasPayment.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,4 @@
-namespace napas_payment.Tests;
+namespace NapasPayment.Tests;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;

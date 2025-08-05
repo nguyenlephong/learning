@@ -1,7 +1,7 @@
 using System.Text;
-using napas_payment.Constants;
+using NapasPayment.Constants;
 
-namespace napas_payment.Services
+namespace NapasPayment.Services
 {
     public interface INapasQrServiceV2
     {

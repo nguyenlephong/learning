@@ -144,8 +144,7 @@ public class VietQRService : IVietQRService
 
   public string GenerateWithAllParams(VietQRFullRequest request)
   {
-    if (request == null)
-      throw new ArgumentException("Request cannot be null");
+    if (request == null) return "";
 
     var contents = new Dictionary<string, string>();
 

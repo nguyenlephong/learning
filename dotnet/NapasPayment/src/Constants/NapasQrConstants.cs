@@ -1,4 +1,4 @@
-namespace napas_payment.Constants
+namespace NapasPayment.Constants
 {
     public static class NapasQrConstants
     {
