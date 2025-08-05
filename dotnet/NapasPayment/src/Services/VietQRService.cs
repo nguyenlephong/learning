@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using NapasPayment.Constants;
 
 public interface IVietQRService
 {
@@ -68,13 +69,13 @@ public class VietQRService : IVietQRService
 
   public string Generate(double amount, string bankBIN, string accountNumber, string note)
   {
-    return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, "VND", "VN");
+    return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY, NapasQrConstants.DEFAULT_COUNTRY_CODE);
   }
 
   public string Create(bool onetime, string serviceType, double amount, string bankBIN, string accountNumber,
     string note)
   {
-    return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, "VND", "VN");
+    return GenerateWithParams(true, "QRIBFTTA", amount, bankBIN, accountNumber, note, NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY, NapasQrConstants.DEFAULT_COUNTRY_CODE);
   }
 
   public string GenerateWithParams(bool onetime, string serviceType, double amount, string bankBIN,
@@ -85,8 +86,8 @@ public class VietQRService : IVietQRService
 
     var contents = new Dictionary<string, string>
     {
-      ["00"] = "01",
-      ["01"] = onetime ? "12" : "11",
+      [NapasQrConstants.PAYLOAD_FORMAT_INDICATOR] = "01",
+      [NapasQrConstants.POINT_OF_INITIATION_METHOD] = onetime ? NapasQrConstants.STATIC_QR : NapasQrConstants.DYNAMIC_QR,
       ["3800"] = "A000000727",
       ["380100"] = bankBIN,
       ["380101"] = accountNumber
@@ -101,27 +102,27 @@ public class VietQRService : IVietQRService
     // Add currency
     if (!string.IsNullOrEmpty(currency) && CurrencyMap.TryGetValue(currency, out var currencyCode))
     {
-      contents["53"] = currencyCode;
+      contents[NapasQrConstants.TRANSACTION_CURRENCY] = currencyCode;
     }
     else
     {
-      contents["53"] = "704"; // Default to VND
+      contents[NapasQrConstants.TRANSACTION_CURRENCY] = NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY; // Default to VND
     }
 
     // Add country code
     if (!string.IsNullOrEmpty(countryCode) && CountryCodes.ContainsKey(countryCode))
     {
-      contents["58"] = countryCode;
+      contents[NapasQrConstants.COUNTRY_CODE] = countryCode;
     }
     else
     {
-      contents["58"] = "VN"; // Default to VN
+      contents[NapasQrConstants.COUNTRY_CODE] = "VN"; // Default to VN
     }
 
     // Add amount if greater than 0
     if (!double.IsNaN(amount) && amount > 0)
     {
-      contents["54"] = ((int)amount).ToString();
+      contents[NapasQrConstants.TRANSACTION_AMOUNT] = ((int)amount).ToString();
     }
 
     // Add note if provided
@@ -149,59 +150,59 @@ public class VietQRService : IVietQRService
     var contents = new Dictionary<string, string>();
 
     // Payload Format Indicator (00)
-    contents["00"] = request.PayloadFormatIndicator ?? "01";
+    contents[NapasQrConstants.PAYLOAD_FORMAT_INDICATOR] = request.PayloadFormatIndicator ?? "01";
 
     // Point of Initiation Method (01)
-    contents["01"] = request.PointOfInitiationMethod ?? (request.OneTime ? "12" : "11");
+    contents[NapasQrConstants.POINT_OF_INITIATION_METHOD] = request.PointOfInitiationMethod ?? (request.OneTime ? "12" : "11");
 
     // Merchant Category Code (52)
     if (!string.IsNullOrEmpty(request.MerchantCategoryCode))
     {
-      contents["52"] = request.MerchantCategoryCode;
+      contents[NapasQrConstants.MERCHANT_CATEGORY_CODE] = request.MerchantCategoryCode;
     }
 
     // Transaction Currency (53)
     if (!string.IsNullOrEmpty(request.TransactionCurrency))
     {
       var currencyCode = CurrencyMap.GetValueOrDefault(request.TransactionCurrency, request.TransactionCurrency);
-      contents["53"] = currencyCode;
+      contents[NapasQrConstants.TRANSACTION_CURRENCY] = currencyCode;
     }
     else
     {
-      contents["53"] = "704"; // Default VND
+      contents[NapasQrConstants.TRANSACTION_CURRENCY] = NapasQrConstants.DEFAULT_TRANSACTION_CURRENCY; // Default VND
     }
 
     // Transaction Amount (54)
     if (request.TransactionAmount > 0)
     {
-      contents["54"] = ((int)request.TransactionAmount).ToString();
+      contents[NapasQrConstants.TRANSACTION_AMOUNT] = ((int)request.TransactionAmount).ToString();
     }
 
     // Country Code (58)
-    contents["58"] = request.CountryCode ?? "VN";
+    contents[NapasQrConstants.COUNTRY_CODE] = request.CountryCode ?? NapasQrConstants.DEFAULT_COUNTRY_CODE;
 
     // Merchant Name (59)
     if (!string.IsNullOrEmpty(request.MerchantName))
     {
-      contents["59"] = ToAscii(request.MerchantName);
+      contents[NapasQrConstants.MERCHANT_NAME] = ToAscii(request.MerchantName);
     }
 
     // Merchant City (60)
     if (!string.IsNullOrEmpty(request.MerchantCity))
     {
-      contents["60"] = ToAscii(request.MerchantCity);
+      contents[NapasQrConstants.MERCHANT_CITY] = ToAscii(request.MerchantCity);
     }
 
     // Purpose (62)
     if (!string.IsNullOrEmpty(request.Purpose))
     {
-      contents["62"] = request.Purpose;
+      contents[NapasQrConstants.ADDITIONAL_DATA_FIELD_TEMPLATE] = request.Purpose;
     }
 
     // Reference Label (63)
     if (!string.IsNullOrEmpty(request.ReferenceLabel))
     {
-      contents["63"] = request.ReferenceLabel;
+      contents[NapasQrConstants.CRC] = request.ReferenceLabel;
     }
 
     // Customer Label (64)
