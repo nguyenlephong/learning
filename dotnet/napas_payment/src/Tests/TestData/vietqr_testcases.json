@@ -1,0 +1,297 @@
+{
+  "version": "1.0",
+  "description": "VietQR GenerateWithParams Function Test Cases",
+  "testCases": [
+    {
+      "testName": "Basic_Valid_QR_With_Amount_And_Note",
+      "description": "Test basic QR generation with amount and note",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 100000,
+        "bankBIN": "970423",
+        "accountNumber": "0011009950446",
+        "note": "Test payment",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021238570010A00000072701340006970423011500110099504460208QRIBFTTA53037045408100000006208Test payment62080804Test5802VN6304A7B2"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_No_Amount_No_Note",
+      "description": "Test QR generation without amount and note",
+      "input": {
+        "oneTime": false,
+        "serviceType": "QRIBFTTA",
+        "amount": 0,
+        "bankBIN": "970415",
+        "accountNumber": "1234567890",
+        "note": "",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021138540010A00000072701240006970415011012345678900208QRIBFTTA53037045802VN6304CE04"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_With_Amount_No_Note",
+      "description": "Test QR generation with amount but no note",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 50000,
+        "bankBIN": "970436",
+        "accountNumber": "9876543210",
+        "note": "",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021238570010A00000072701340006970436011098765432100208QRIBFTTA530370454055000005802VN63041234"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_No_Amount_With_Note",
+      "description": "Test QR generation without amount but with note",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 0,
+        "bankBIN": "970422",
+        "accountNumber": "1111222233",
+        "note": "No amount payment",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021238570010A00000072701340006970422011011112222330208QRIBFTTA53037046217No amount payment5802VN6304ABCD"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_Different_ServiceType",
+      "description": "Test QR generation with different service type",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTC",
+        "amount": 75000,
+        "bankBIN": "970407",
+        "accountNumber": "5555666677",
+        "note": "Custom service",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021238570010A00000072701340006970407011055556666770208QRIBFTTC530370454057500006214Custom service5802VN6304EF12"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_Empty_ServiceType",
+      "description": "Test QR generation with empty service type",
+      "input": {
+        "oneTime": true,
+        "serviceType": "",
+        "amount": 80000,
+        "bankBIN": "970432",
+        "accountNumber": "EMPTY12345",
+        "note": "No service type",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021230520010A000000727013000069704320110EMPTY12345530370454058000006215No service type5802VN63043456"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_USD_Currency",
+      "description": "Test QR generation with USD currency",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 100,
+        "bankBIN": "970415",
+        "accountNumber": "USD123456",
+        "note": "USD payment",
+        "currency": "USD",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021238530010A000000727012300069704150109USD1234560208QRIBFTTA530370454031005802VN62150811USD payment63048FB9"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_Vietnamese_Note_Converted",
+      "description": "Test QR generation with Vietnamese characters converted to ASCII",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 150000,
+        "bankBIN": "970425",
+        "accountNumber": "1122334455",
+        "note": "Thanh toán hóa đơn",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021238540010A00000072701240006970425011011223344550208QRIBFTTA530370454061500005802VN62220818Thanh toan hoa don6304CD7E"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_Large_Amount",
+      "description": "Test QR generation with large amount",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 999999999,
+        "bankBIN": "970418",
+        "accountNumber": "9999888877",
+        "note": "Large payment",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021238570010A00000072701340006970418011099998888770208QRIBFTTA530370454099999999996213Large payment5802VN6304F123"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_OneTime_False",
+      "description": "Test QR generation with oneTime set to false",
+      "input": {
+        "oneTime": false,
+        "serviceType": "QRIBFTTA",
+        "amount": 200000,
+        "bankBIN": "970422",
+        "accountNumber": "1111222233",
+        "note": "Recurring payment",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": "00020101021138570010A00000072701340006970422011011112222330208QRIBFTTA5303704540820000006217Recurring payment5802VN6304CDEF"
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Invalid_Empty_BankBIN",
+      "description": "Test error when bank BIN is empty",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 100000,
+        "bankBIN": "",
+        "accountNumber": "1234567890",
+        "note": "Empty BIN",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": ""
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Invalid_Null_BankBIN",
+      "description": "Test error when bank BIN is null",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 100000,
+        "bankBIN": null,
+        "accountNumber": "1234567890",
+        "note": "Null BIN",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": ""
+      },
+      "shouldThrowException": false,
+      "expectedException": ""
+    },
+    {
+      "testName": "Invalid_Empty_AccountNumber",
+      "description": "Test error when account number is empty",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 100000,
+        "bankBIN": "970423",
+        "accountNumber": "",
+        "note": "Empty account",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": ""
+      },
+      "shouldThrowException": false,
+      "expectedException": ""
+    },
+    {
+      "testName": "Invalid_Null_AccountNumber",
+      "description": "Test error when account number is null",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": 100000,
+        "bankBIN": "970423",
+        "accountNumber": null,
+        "note": "Null account",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": ""
+      },
+      "shouldThrowException": false,
+      "expectedException": ""
+    },
+    {
+      "testName": "Valid_QR_NaN_Amount_Ignored",
+      "description": "Test QR generation with NaN amount (should be ignored)",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": "NaN",
+        "bankBIN": "970423",
+        "accountNumber": "1234567890",
+        "note": "NaN amount",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": ""
+      },
+      "shouldThrowException": false
+    },
+    {
+      "testName": "Valid_QR_Negative_Amount_Ignored",
+      "description": "Test QR generation with negative amount (should be ignored)",
+      "input": {
+        "oneTime": true,
+        "serviceType": "QRIBFTTA",
+        "amount": -50000,
+        "bankBIN": "970423",
+        "accountNumber": "1234567890",
+        "note": "Negative amount",
+        "currency": "VND",
+        "countryCode": "VN"
+      },
+      "expected": {
+        "expectedQRCode": ""
+      },
+      "shouldThrowException": false
+    }
+  ]
+}
