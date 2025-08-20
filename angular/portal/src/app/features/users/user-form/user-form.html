@@ -1,0 +1,21 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <label>
+    Name:
+    <input type="text" formControlName="name" />
+  </label>
+  <div *ngIf="userForm.controls['name'].invalid && userForm.controls['name'].touched">
+    Name is required
+  </div>
+
+  <label>
+    Email:
+    <input type="email" formControlName="email" />
+  </label>
+  <div *ngIf="userForm.controls['email'].invalid && userForm.controls['email'].touched">
+    Valid email is required
+  </div>
+
+  <button type="submit" [disabled]="isSubmitting || userForm.invalid">
+    {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+  </button>
+</form>
