@@ -3,3 +3,9 @@
 .idea/
 .vscode/*
 
+node_modules
+
+build
+dist
+
+package-lock.json
